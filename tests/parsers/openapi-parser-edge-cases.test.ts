@@ -449,8 +449,11 @@ describe('OpenAPIParser - Edge Cases for 95%+ Coverage', () => {
     });
 
     it('should parse using parseOpenAPI convenience function with file path', async () => {
+      const { resolve } = await import('path');
+      const filePath = resolve(__dirname, '../fixtures/inline-types-api.json');
+
       const result = await parseOpenAPI(
-        '/workspaces/llm-forge/tests/fixtures/inline-types-api.json',
+        filePath,
         {
           providerId: 'test',
           providerName: 'Test Provider',
