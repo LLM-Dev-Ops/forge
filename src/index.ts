@@ -21,3 +21,6 @@ export * from './core/template-engine.js';
 
 // Generators
 export * from './generators/index.js';
+
+// Adapters (upstream integration layer)
+export * from './adapters/index.js';
