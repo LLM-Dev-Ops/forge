@@ -44,7 +44,7 @@ jobs:
         run: npm run quality
 
       - name: Archive quality reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: quality-reports
           path: |
@@ -79,7 +79,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: test-results-${{ matrix.os }}-node-${{ matrix.node-version }}
           path: coverage/
@@ -106,7 +106,7 @@ jobs:
         run: npm run bench
 
       - name: Store benchmark results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: benchmark-results
           path: benchmark-results.json
@@ -141,7 +141,7 @@ jobs:
           npm pack 2>&1 | grep -E '\.(js|ts|json)$' || true
 
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: dist
           path: dist/
