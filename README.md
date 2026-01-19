@@ -610,7 +610,7 @@ Security:           Multi-layer scanning
 
 **Status**: ✅ Production Ready | **License**: Apache 2.0 | **Version**: 1.0.0
 
-Made with ❤️ by the LLM-Dev-Ops Team
+Made with ❤️ by the [LLM-Dev-Ops](https://github.com/LLM-Dev-Ops) Team
 
 [Getting Started](#-quick-start) · [Documentation](docs/) · [Report Bug](https://github.com/globalbusinessadvisors/llm-forge/issues) · [Request Feature](https://github.com/globalbusinessadvisors/llm-forge/issues/new)
 
