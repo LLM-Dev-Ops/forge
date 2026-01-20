@@ -1,0 +1,139 @@
+# Cloud Run Service Configuration for LLM-Forge
+#
+# ARCHITECTURE:
+# - Single unified service for all agents
+# - Stateless execution
+# - Horizontal autoscaling
+# - No direct SQL access
+
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: llm-forge
+  labels:
+    app: llm-forge
+    platform: agentics
+    tier: code-generation
+  annotations:
+    # Deployment annotations
+    run.googleapis.com/description: "LLM-Forge Code Generation and Translation Service"
+    run.googleapis.com/launch-stage: GA
+spec:
+  template:
+    metadata:
+      annotations:
+        # Autoscaling configuration
+        autoscaling.knative.dev/minScale: "0"
+        autoscaling.knative.dev/maxScale: "10"
+
+        # CPU allocation
+        run.googleapis.com/cpu-throttling: "true"
+        run.googleapis.com/startup-cpu-boost: "true"
+
+        # Execution environment
+        run.googleapis.com/execution-environment: gen2
+
+        # VPC connector (if needed for internal services)
+        # run.googleapis.com/vpc-access-connector: projects/agentics-dev/locations/us-central1/connectors/llm-forge-connector
+        # run.googleapis.com/vpc-access-egress: private-ranges-only
+
+    spec:
+      # Service account with least privilege
+      serviceAccountName: llm-forge-sa@agentics-dev.iam.gserviceaccount.com
+
+      # Request timeout
+      timeoutSeconds: 300
+
+      # Container concurrency
+      containerConcurrency: 80
+
+      containers:
+        - name: llm-forge
+          image: us-central1-docker.pkg.dev/agentics-dev/llm-forge/llm-forge:latest
+
+          # Resource limits
+          resources:
+            limits:
+              cpu: "2"
+              memory: 2Gi
+            requests:
+              cpu: "1"
+              memory: 1Gi
+
+          # Container port
+          ports:
+            - containerPort: 8080
+              name: http1
+
+          # Health checks
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          # Environment variables (placeholders - actual values from Secret Manager)
+          env:
+            - name: SERVICE_NAME
+              value: llm-forge
+
+            - name: NODE_ENV
+              value: production
+
+            - name: PORT
+              value: "8080"
+
+            - name: LOG_LEVEL
+              value: info
+
+            - name: LOG_FORMAT
+              value: json
+
+            # Platform environment (injected at deploy time)
+            - name: PLATFORM_ENV
+              value: prod
+
+            # RuVector service URL
+            - name: RUVECTOR_SERVICE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: llm-forge-secrets
+                  key: ruvector-service-url
+
+            # RuVector API key
+            - name: RUVECTOR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: llm-forge-secrets
+                  key: ruvector-api-key
+
+            # Telemetry endpoint
+            - name: TELEMETRY_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: llm-forge-secrets
+                  key: telemetry-endpoint
+
+            # Feature flags
+            - name: FEATURE_EMIT_EVENTS
+              value: "true"
+
+            - name: FEATURE_DETAILED_LOGS
+              value: "false"
+
+  # Traffic configuration
+  traffic:
+    - percent: 100
+      latestRevision: true

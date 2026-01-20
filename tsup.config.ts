@@ -37,4 +37,19 @@ export default defineConfig([
       js: '#!/usr/bin/env node',
     },
   },
+  // HTTP Service build (for Cloud Run deployment)
+  {
+    entry: {
+      'service/server': 'src/service/server.ts',
+    },
+    format: ['esm'],
+    dts: false,
+    splitting: false,
+    sourcemap: true,
+    minify: false,
+    target: 'node20',
+    outDir: 'dist',
+    tsconfig: 'tsconfig.json',
+    shims: true,
+  },
 ]);

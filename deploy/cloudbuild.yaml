@@ -1,0 +1,147 @@
+# Cloud Build Configuration for LLM-Forge
+# Unified deployment pipeline for all agents
+#
+# Usage:
+#   gcloud builds submit --config=deploy/cloudbuild.yaml \
+#     --substitutions=_ENV=dev,_REGION=us-central1
+
+substitutions:
+  _ENV: dev
+  _REGION: us-central1
+  _SERVICE_NAME: llm-forge
+  _ARTIFACT_REGISTRY: us-central1-docker.pkg.dev
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: E2_HIGHCPU_8
+  substitution_option: 'ALLOW_LOOSE'
+
+steps:
+  # ==========================================================================
+  # STEP 1: Validate environment
+  # ==========================================================================
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'validate-env'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "=== LLM-Forge Deployment ==="
+        echo "Environment: $_ENV"
+        echo "Region: $_REGION"
+        echo "Service: $_SERVICE_NAME"
+        echo "Project: $PROJECT_ID"
+        if [[ "$_ENV" != "dev" && "$_ENV" != "staging" && "$_ENV" != "prod" ]]; then
+          echo "ERROR: Invalid environment"
+          exit 1
+        fi
+        echo "Environment validated"
+
+  # ==========================================================================
+  # STEP 2: Build TypeScript
+  # ==========================================================================
+  - name: 'node:20-slim'
+    id: 'build'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "=== Installing Dependencies ==="
+        npm ci --prefer-offline
+        echo "=== Build ==="
+        npm run build
+        echo "Build completed"
+    waitFor: ['validate-env']
+
+  # ==========================================================================
+  # STEP 3: Build container image
+  # ==========================================================================
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-image'
+    args:
+      - 'build'
+      - '-t'
+      - '${_ARTIFACT_REGISTRY}/${PROJECT_ID}/llm-forge/${_SERVICE_NAME}:${BUILD_ID}'
+      - '-t'
+      - '${_ARTIFACT_REGISTRY}/${PROJECT_ID}/llm-forge/${_SERVICE_NAME}:${_ENV}-latest'
+      - '-f'
+      - 'deploy/Dockerfile'
+      - '.'
+    waitFor: ['build']
+
+  # ==========================================================================
+  # STEP 4: Push to Artifact Registry
+  # ==========================================================================
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'push-image'
+    args:
+      - 'push'
+      - '--all-tags'
+      - '${_ARTIFACT_REGISTRY}/${PROJECT_ID}/llm-forge/${_SERVICE_NAME}'
+    waitFor: ['build-image']
+
+  # ==========================================================================
+  # STEP 5: Deploy to Cloud Run
+  # ==========================================================================
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'deploy-service'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "=== Deploying to Cloud Run ==="
+        gcloud run deploy $_SERVICE_NAME \
+          --image $_ARTIFACT_REGISTRY/$PROJECT_ID/llm-forge/$_SERVICE_NAME:$BUILD_ID \
+          --region $_REGION \
+          --platform managed \
+          --allow-unauthenticated \
+          --memory 2Gi \
+          --cpu 2 \
+          --timeout 300s \
+          --concurrency 80 \
+          --min-instances 0 \
+          --max-instances 10 \
+          --set-env-vars "SERVICE_NAME=llm-forge,NODE_ENV=production,PLATFORM_ENV=$_ENV,SERVICE_VERSION=$BUILD_ID,FEATURE_EMIT_EVENTS=true,LOG_LEVEL=info" \
+          --service-account llm-forge-sa@$PROJECT_ID.iam.gserviceaccount.com \
+          --labels "app=llm-forge,env=$_ENV"
+        echo "Deployment complete"
+    waitFor: ['push-image']
+
+  # ==========================================================================
+  # STEP 6: Verify deployment
+  # ==========================================================================
+  - name: 'gcr.io/cloud-builders/gcloud'
+    id: 'verify-deployment'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        echo "=== Verifying Deployment ==="
+        SVC_URL=$$(gcloud run services describe $_SERVICE_NAME --region $_REGION --format 'value(status.url)')
+        echo "Service URL: $$SVC_URL"
+        sleep 10
+        echo "Checking health endpoint..."
+        HTTP_CODE=$$(curl -s -o /dev/null -w "%{http_code}" "$$SVC_URL/health" || echo "000")
+        if [[ "$$HTTP_CODE" == "200" ]]; then
+          echo "Health check passed"
+        else
+          echo "WARNING: Health check returned HTTP $$HTTP_CODE"
+        fi
+        echo ""
+        echo "=== Deployment Summary ==="
+        echo "Service: $_SERVICE_NAME"
+        echo "URL: $$SVC_URL"
+        echo "Environment: $_ENV"
+        echo "Version: $BUILD_ID"
+        echo "Region: $_REGION"
+        echo ""
+        echo "LLM-Forge deployment completed"
+    waitFor: ['deploy-service']
+
+# Images to be pushed
+images:
+  - '${_ARTIFACT_REGISTRY}/${PROJECT_ID}/llm-forge/${_SERVICE_NAME}:${BUILD_ID}'
+  - '${_ARTIFACT_REGISTRY}/${PROJECT_ID}/llm-forge/${_SERVICE_NAME}:${_ENV}-latest'
+
+# Build timeout
+timeout: '1800s'

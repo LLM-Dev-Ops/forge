@@ -1,0 +1,194 @@
+# SDK Generator Agent Configuration
+# Classification: GENERATION
+# decision_type: sdk_generation
+
+name: sdk-generator-agent
+version: "1.0.0"
+type: generation
+description: >
+  GENERATION-class agent for transforming canonical API contracts into
+  language-specific SDK artifacts with deterministic output.
+
+# Agent classification
+classification:
+  type: GENERATION
+  deterministic: true
+  stateless: true
+  idempotent: true
+
+# Capabilities
+capabilities:
+  - canonical-schema-consumption
+  - multi-language-sdk-generation
+  - type-mapping
+  - template-rendering
+  - deterministic-output
+  - decision-event-emission
+
+# Supported target languages
+supported_languages:
+  - typescript
+  - python
+  - rust
+  - go
+  - java
+  - csharp
+  - javascript
+
+# Decision types emitted
+decision_types:
+  - sdk_generation.initiated
+  - sdk_generation.completed
+  - sdk_generation.failed
+  - sdk_generation.type_mapping
+  - sdk_generation.language_generation
+
+# Confidence semantics
+confidence:
+  semantics:
+    - deterministic     # Same input = same output (hash-verifiable)
+    - heuristic        # Best-effort type mapping
+    - constraint_based # Output satisfies constraints
+  default: deterministic
+
+# Input schema reference
+input_schema:
+  module: "@llm-dev-ops/llm-forge/agents/contracts"
+  type: SDKGenerationRequestSchema
+
+# Output schema reference
+output_schema:
+  module: "@llm-dev-ops/llm-forge/agents/contracts"
+  type: SDKGenerationResponseSchema
+
+# CLI contract
+cli:
+  command: generate
+  arguments:
+    - name: input
+      description: Canonical schema (JSON) or OpenAPI spec
+      required: true
+  options:
+    - flag: "-l, --lang <languages...>"
+      description: Target languages
+      default: ["typescript", "python"]
+    - flag: "-o, --output <dir>"
+      description: Output directory
+      default: "./generated"
+    - flag: "-n, --name <name>"
+      description: Package name
+      default: "my-llm-sdk"
+    - flag: "--pkg-version <version>"
+      description: Package version
+      default: "0.1.0"
+    - flag: "--emit-events"
+      description: Emit DecisionEvents to ruvector-service
+    - flag: "--dry-run"
+      description: Validate without generating files
+    - flag: "-v, --verbose"
+      description: Verbose output
+
+# Non-responsibilities (what this agent MUST NEVER do)
+non_responsibilities:
+  - execute-generated-code
+  - invoke-compilers-or-build-tools
+  - run-tests-on-generated-code
+  - deploy-generated-artifacts
+  - modify-runtime-behavior
+  - persist-state-between-invocations
+  - access-sql-databases-directly
+  - write-to-external-file-systems
+  - orchestrate-multi-agent-workflows
+  - spawn-child-processes
+  - make-network-requests-except-ruvector
+  - enforce-access-control-policies
+  - modify-authentication-schemes
+  - alter-rate-limiting-configurations
+  - embed-api-keys-in-generated-code
+  - log-sensitive-schema-data
+  - persist-credentials
+
+# Failure modes
+failure_modes:
+  INVALID_SCHEMA:
+    recoverable: false
+    action: Return validation errors to caller
+  UNSUPPORTED_LANGUAGE:
+    recoverable: false
+    action: Return supported language list
+  TYPE_MAPPING_FAILURE:
+    recoverable: true
+    action: Use fallback type (any/unknown)
+  TEMPLATE_RENDERING_FAILURE:
+    recoverable: false
+    action: Return template error with context
+  SCHEMA_VALIDATION_FAILURE:
+    recoverable: false
+    action: Return validation errors
+  RESOURCE_EXHAUSTION:
+    recoverable: false
+    action: Return resource limit error
+  TIMEOUT:
+    recoverable: false
+    action: Return timeout error with partial results if available
+
+# Persisted data (to ruvector-service)
+persisted_data:
+  - DecisionEvent (all decisions)
+  - Generation metrics (duration, file counts)
+  - Confidence scores
+  - Input/output hashes for reproducibility
+  - Error events with stack traces
+  - Telemetry data (latency, resource usage)
+
+# Non-persisted data
+non_persisted_data:
+  - Generated code content (too large, not needed)
+  - Full CanonicalSchema (reference by hash only)
+  - API keys or credentials
+  - File system paths
+  - Internal processing state
+
+# Downstream consumers
+downstream_consumers:
+  - system: LLM-Observatory
+    consumed_data:
+      - DecisionEvents
+      - Metrics
+      - Telemetry
+    purpose: Observability and monitoring
+  - system: CI/CD Pipeline
+    consumed_data:
+      - Generated SDK artifacts
+      - Build commands
+    purpose: Automated build and publish
+  - system: Package Registry
+    consumed_data:
+      - Generated SDK packages
+    purpose: Distribution
+  - system: Schema Registry
+    consumed_data:
+      - Compatibility metadata
+      - Version info
+    purpose: Version tracking
+
+# Versioning rules
+versioning:
+  agent_version_format: semver
+  sdk_version_source: packageConfig.version
+  schema_version_source: schema.metadata.version
+  breaking_change_policies:
+    - Removal of public types requires major version bump
+    - Removal of endpoints requires major version bump
+    - Type signature changes require major version bump
+  determinism_hash_format: SHA-256 of normalized input
+
+# Resource limits
+limits:
+  max_request_size_bytes: 10485760  # 10MB
+  max_execution_time_ms: 300000     # 5 minutes
+  max_output_files: 1000
+  max_output_size_bytes: 104857600  # 100MB
+
+# Temperature (for any LLM components - set to 0 for determinism)
+temperature: 0.0
