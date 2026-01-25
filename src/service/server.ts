@@ -13,11 +13,26 @@
  * - Deterministic outputs
  * - Environment-based configuration
  *
+ * PHASE 2 - OPERATIONAL INTELLIGENCE (Layer 1):
+ * - Hard startup failure if Ruvector unavailable
+ * - Signal emission (anomaly, drift, memory lineage, latency)
+ * - Performance budgets (MAX_TOKENS=1000, MAX_LATENCY_MS=2000, MAX_CALLS_PER_RUN=3)
+ * - Caching for historical reads/lineage lookups (TTL 60-120s)
+ *
  * @module service/server
  */
 
 import { createServer, IncomingMessage, ServerResponse } from 'http';
 import { randomUUID } from 'crypto';
+
+// Phase 2 imports
+import {
+  initPhase2,
+  type Phase2Context,
+  PerformanceTracker,
+  getSignalEmitter,
+  getCache,
+} from '../phase2/index.js';
 
 // Import agent handlers
 import {
@@ -53,6 +68,15 @@ const SERVICE_NAME = process.env.SERVICE_NAME || 'llm-forge';
 const SERVICE_VERSION = process.env.SERVICE_VERSION || '1.0.0';
 const PLATFORM_ENV = process.env.PLATFORM_ENV || 'dev';
 const LOG_LEVEL = process.env.LOG_LEVEL || 'info';
+
+// Phase 2 configuration
+const AGENT_NAME = process.env.AGENT_NAME || 'llm-forge';
+const AGENT_DOMAIN = process.env.AGENT_DOMAIN || 'code-generation';
+const AGENT_PHASE = process.env.AGENT_PHASE || 'phase2';
+const AGENT_LAYER = process.env.AGENT_LAYER || 'layer1';
+
+// Phase 2 context (initialized at startup)
+let phase2Context: Phase2Context | null = null;
 
 // =============================================================================
 // LOGGING
@@ -136,12 +160,28 @@ async function handleHealth(
   _req: IncomingMessage,
   res: ServerResponse
 ): Promise<void> {
+  // Get cache stats for health response
+  const cache = getCache();
+  const cacheStats = cache?.getStats();
+
   sendJSON(res, 200, {
     status: 'healthy',
     service: SERVICE_NAME,
     version: SERVICE_VERSION,
     environment: PLATFORM_ENV,
     timestamp: new Date().toISOString(),
+    // Phase 2 metadata
+    phase2: {
+      agentName: AGENT_NAME,
+      agentDomain: AGENT_DOMAIN,
+      phase: AGENT_PHASE,
+      layer: AGENT_LAYER,
+      ruvectorConnected: phase2Context !== null,
+      cache: cacheStats ? {
+        entries: cacheStats.entries,
+        hitRate: cacheStats.hitRate,
+      } : null,
+    },
     agents: {
       'sdk-generator': { status: 'available', version: SDK_AGENT_VERSION },
       'cli-generator': { status: 'available', version: CLI_AGENT_VERSION },
@@ -193,26 +233,43 @@ async function handleSDKGenerator(
   const requestId = randomUUID();
   const startTime = Date.now();
 
+  // Phase 2: Initialize performance tracker
+  const signalEmitter = getSignalEmitter();
+  const tracker = new PerformanceTracker(requestId, signalEmitter || undefined);
+
   log('info', 'SDK Generator request received', { requestId });
 
   try {
     const body = await readBody(req);
+    tracker.recordOperation('read_body', Date.now() - startTime);
 
     const context = {
       requestId,
       startTime,
-      getRemainingTime: () => 300000 - (Date.now() - startTime),
+      getRemainingTime: () => Math.min(
+        300000 - (Date.now() - startTime),
+        tracker.getRemainingLatencyMs()
+      ),
       emitEvents: process.env.FEATURE_EMIT_EVENTS === 'true',
       dryRun: false,
       ruvectorEndpoint: process.env.RUVECTOR_SERVICE_URL,
+      // Phase 2: Pass performance tracker
+      performanceTracker: tracker,
     };
 
+    const handlerStart = Date.now();
     const response = await sdkGeneratorHandler(body, context);
+    tracker.recordOperation('handler', Date.now() - handlerStart);
+
+    // Phase 2: Complete performance tracking
+    const budgetResult = tracker.complete();
 
     log('info', 'SDK Generator completed', {
       requestId,
       statusCode: response.statusCode,
-      duration: Date.now() - startTime,
+      duration: budgetResult.metrics.latencyMs,
+      withinBudget: budgetResult.withinBudget,
+      violations: budgetResult.violations.map(v => v.budget),
     });
 
     res.writeHead(response.statusCode, {
@@ -220,9 +277,23 @@ async function handleSDKGenerator(
       'X-Request-ID': requestId,
       'X-Agent-ID': SDK_AGENT_ID,
       'X-Agent-Version': SDK_AGENT_VERSION,
+      'X-Latency-Ms': String(budgetResult.metrics.latencyMs),
+      'X-Within-Budget': String(budgetResult.withinBudget),
     });
     res.end(response.body);
   } catch (error) {
+    // Phase 2: Emit anomaly signal for errors
+    if (signalEmitter) {
+      signalEmitter.emitAnomaly({
+        anomalyType: 'handler_error',
+        observed: error instanceof Error ? error.message : String(error),
+        confidence: 1.0,
+        severity: 'critical',
+        requestId,
+        context: { agent: 'sdk-generator' },
+      });
+    }
+
     log('error', 'SDK Generator error', {
       requestId,
       error: error instanceof Error ? error.message : String(error),
@@ -496,26 +567,52 @@ async function handleRequest(
 
 const server = createServer(handleRequest);
 
-server.listen(PORT, () => {
-  log('info', 'LLM-Forge service started', {
-    port: PORT,
-    environment: PLATFORM_ENV,
-    agents: [
-      SDK_AGENT_ID,
-      CLI_AGENT_ID,
-      TRANSLATOR_AGENT_ID,
-      VC_AGENT_ID,
-    ],
-  });
+/**
+ * Phase 2 Enhanced Startup
+ *
+ * 1. Initialize Phase 2 infrastructure (validates env, verifies Ruvector)
+ * 2. Start HTTP server only after Phase 2 is ready
+ * 3. Fail HARD if Ruvector is unavailable
+ */
+async function startServer(): Promise<void> {
+  try {
+    // Phase 2: Initialize infrastructure (exits process on failure)
+    console.log('[STARTUP] Initializing Phase 2 - Operational Intelligence...');
+    phase2Context = await initPhase2();
+    console.log('[STARTUP] Phase 2 initialized successfully');
 
-  console.log(`
+    // Start HTTP server
+    server.listen(PORT, () => {
+      log('info', 'LLM-Forge service started', {
+        port: PORT,
+        environment: PLATFORM_ENV,
+        phase2: {
+          agentName: AGENT_NAME,
+          agentDomain: AGENT_DOMAIN,
+          phase: AGENT_PHASE,
+          layer: AGENT_LAYER,
+        },
+        agents: [
+          SDK_AGENT_ID,
+          CLI_AGENT_ID,
+          TRANSLATOR_AGENT_ID,
+          VC_AGENT_ID,
+        ],
+      });
+
+      console.log(`
 ╔════════════════════════════════════════════════════════════╗
-║                    LLM-FORGE SERVICE                       ║
+║           LLM-FORGE SERVICE - PHASE 2 ENABLED              ║
 ╠════════════════════════════════════════════════════════════╣
 ║  Service:     ${SERVICE_NAME.padEnd(42)}║
 ║  Version:     ${SERVICE_VERSION.padEnd(42)}║
 ║  Environment: ${PLATFORM_ENV.padEnd(42)}║
 ║  Port:        ${String(PORT).padEnd(42)}║
+╠════════════════════════════════════════════════════════════╣
+║  Phase 2 - Operational Intelligence (Layer 1):             ║
+║    Agent:     ${AGENT_NAME.padEnd(42)}║
+║    Domain:    ${AGENT_DOMAIN.padEnd(42)}║
+║    Ruvector:  Connected                                    ║
 ╠════════════════════════════════════════════════════════════╣
 ║  Agents:                                                   ║
 ║    • SDK Generator Agent (${SDK_AGENT_VERSION})                        ║
@@ -531,24 +628,48 @@ server.listen(PORT, () => {
 ║    POST /api/v1/agents/api-translator                      ║
 ║    POST /api/v1/agents/version-compatibility               ║
 ╚════════════════════════════════════════════════════════════╝
-  `);
-});
+      `);
+    });
+  } catch (error) {
+    console.error('[STARTUP] FATAL: Failed to initialize service');
+    console.error(error);
+    process.exit(1);
+  }
+}
 
-// Graceful shutdown
-process.on('SIGTERM', () => {
-  log('info', 'Received SIGTERM, shutting down gracefully');
+// Start the server
+startServer();
+
+// Graceful shutdown with Phase 2 cleanup
+async function gracefulShutdown(signal: string): Promise<void> {
+  log('info', `Received ${signal}, shutting down gracefully`);
+
+  // Phase 2: Flush pending signals
+  const signalEmitter = getSignalEmitter();
+  if (signalEmitter) {
+    log('info', 'Flushing pending signals...');
+    await signalEmitter.forceFlush();
+  }
+
+  // Phase 2: Stop cache cleanup
+  const cache = getCache();
+  if (cache) {
+    cache.stopCleanup();
+  }
+
   server.close(() => {
     log('info', 'Server closed');
     process.exit(0);
   });
-});
 
-process.on('SIGINT', () => {
-  log('info', 'Received SIGINT, shutting down gracefully');
-  server.close(() => {
-    log('info', 'Server closed');
-    process.exit(0);
-  });
-});
+  // Force exit after 10s
+  setTimeout(() => {
+    log('warn', 'Forced shutdown after timeout');
+    process.exit(1);
+  }, 10000).unref();
+}
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 
 export { server };

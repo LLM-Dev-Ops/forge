@@ -83,13 +83,14 @@ steps:
   # ==========================================================================
   # STEP 5: Deploy to Cloud Run
   # ==========================================================================
+  # Phase 2 - Operational Intelligence deployment with Secret Manager integration
   - name: 'gcr.io/cloud-builders/gcloud'
     id: 'deploy-service'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        echo "=== Deploying to Cloud Run ==="
+        echo "=== Deploying to Cloud Run (Phase 2 Enabled) ==="
         gcloud run deploy $_SERVICE_NAME \
           --image $_ARTIFACT_REGISTRY/$PROJECT_ID/llm-forge/$_SERVICE_NAME:$BUILD_ID \
           --region $_REGION \
@@ -101,10 +102,12 @@ steps:
           --concurrency 80 \
           --min-instances 0 \
           --max-instances 10 \
-          --set-env-vars "SERVICE_NAME=llm-forge,NODE_ENV=production,PLATFORM_ENV=$_ENV,SERVICE_VERSION=$BUILD_ID,FEATURE_EMIT_EVENTS=true,LOG_LEVEL=info" \
+          --set-env-vars "SERVICE_NAME=llm-forge,NODE_ENV=production,PLATFORM_ENV=$_ENV,SERVICE_VERSION=$BUILD_ID,FEATURE_EMIT_EVENTS=true,LOG_LEVEL=info,AGENT_NAME=llm-forge,AGENT_DOMAIN=code-generation,AGENT_PHASE=phase2,AGENT_LAYER=layer1" \
+          --set-secrets "RUVECTOR_SERVICE_URL=ruvector-service-url:latest,RUVECTOR_API_KEY=ruvector-api-key:latest" \
+          \
           --service-account llm-forge-sa@$PROJECT_ID.iam.gserviceaccount.com \
-          --labels "app=llm-forge,env=$_ENV"
-        echo "Deployment complete"
+          --labels "app=llm-forge,env=$_ENV,phase=phase2,layer=layer1"
+        echo "Deployment complete (Phase 2 - Operational Intelligence)"
     waitFor: ['push-image']
 
   # ==========================================================================

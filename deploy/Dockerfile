@@ -72,6 +72,11 @@ ENV PORT=8080
 ENV SERVICE_NAME=llm-forge
 ENV LOG_LEVEL=info
 
+# Phase 2 - Operational Intelligence (Layer 1)
+# RUVECTOR_SERVICE_URL and RUVECTOR_API_KEY must be provided at runtime
+ENV AGENT_PHASE=phase2
+ENV AGENT_LAYER=layer1
+
 # Health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD node -e "require('http').get('http://localhost:' + process.env.PORT + '/health', (r) => process.exit(r.statusCode === 200 ? 0 : 1))"

@@ -5,6 +5,12 @@
 # - Stateless execution
 # - Horizontal autoscaling
 # - No direct SQL access
+#
+# PHASE 2 - Operational Intelligence (Layer 1):
+# - Hard startup failure if Ruvector unavailable
+# - Signal emission (anomaly, drift, memory lineage, latency)
+# - Performance budgets (MAX_TOKENS=1000, MAX_LATENCY_MS=2000, MAX_CALLS_PER_RUN=3)
+# - Caching for historical reads/lineage lookups (TTL 60-120s)
 
 apiVersion: serving.knative.dev/v1
 kind: Service
@@ -14,9 +20,12 @@ metadata:
     app: llm-forge
     platform: agentics
     tier: code-generation
+    # Phase 2 labels
+    phase: phase2
+    layer: layer1
   annotations:
     # Deployment annotations
-    run.googleapis.com/description: "LLM-Forge Code Generation and Translation Service"
+    run.googleapis.com/description: "LLM-Forge Code Generation and Translation Service (Phase 2)"
     run.googleapis.com/launch-stage: GA
 spec:
   template:
@@ -132,6 +141,42 @@ spec:
 
             - name: FEATURE_DETAILED_LOGS
               value: "false"
+
+            # =================================================================
+            # PHASE 2 - AGENT IDENTITY (REQUIRED)
+            # =================================================================
+            - name: AGENT_NAME
+              value: llm-forge
+
+            - name: AGENT_DOMAIN
+              value: code-generation
+
+            - name: AGENT_PHASE
+              value: phase2
+
+            - name: AGENT_LAYER
+              value: layer1
+
+            # =================================================================
+            # PHASE 2 - PERFORMANCE BUDGETS
+            # =================================================================
+            - name: MAX_TOKENS
+              value: "1000"
+
+            - name: MAX_LATENCY_MS
+              value: "2000"
+
+            - name: MAX_CALLS_PER_RUN
+              value: "3"
+
+            # =================================================================
+            # PHASE 2 - CACHING
+            # =================================================================
+            - name: CACHE_TTL_MIN_MS
+              value: "60000"
+
+            - name: CACHE_TTL_MAX_MS
+              value: "120000"
 
   # Traffic configuration
   traffic:
