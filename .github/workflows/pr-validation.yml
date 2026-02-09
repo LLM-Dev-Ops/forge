@@ -50,7 +50,7 @@ jobs:
           cache: 'npm'
 
       - name: Cache node_modules
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         id: cache-node-modules
         with:
           path: node_modules
@@ -81,7 +81,7 @@ jobs:
           cache: 'npm'
 
       - name: Restore node_modules cache
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
@@ -105,7 +105,7 @@ jobs:
           cache: 'npm'
 
       - name: Restore node_modules cache
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
@@ -129,7 +129,7 @@ jobs:
           cache: 'npm'
 
       - name: Restore node_modules cache
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
@@ -156,7 +156,7 @@ jobs:
           cache: 'npm'
 
       - name: Restore node_modules cache
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
@@ -188,7 +188,7 @@ jobs:
           cache: 'npm'
 
       - name: Restore node_modules cache
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
@@ -230,7 +230,7 @@ jobs:
           cache: 'npm'
 
       - name: Restore node_modules cache
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: node_modules
           key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
