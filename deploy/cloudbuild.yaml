@@ -47,7 +47,7 @@ steps:
       - '-c'
       - |
         echo "=== Installing Dependencies ==="
-        npm ci --prefer-offline
+        npm install
         echo "=== Build ==="
         npm run build
         echo "Build completed"

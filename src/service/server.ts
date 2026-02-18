@@ -628,6 +628,33 @@ async function handleVersionCompatibility(
   }
 }
 
+async function handleEvents(
+  req: IncomingMessage,
+  res: ServerResponse
+): Promise<void> {
+  try {
+    const body = await readBody(req);
+    const event = JSON.parse(body);
+
+    log('info', 'Event received', {
+      source: event.source,
+      event_type: event.event_type,
+      execution_id: event.execution_id,
+      timestamp: event.timestamp,
+    });
+
+    sendJSON(res, 202, {
+      status: 'accepted',
+      execution_id: event.execution_id,
+    });
+  } catch (error) {
+    log('error', 'Event ingestion error', {
+      error: error instanceof Error ? error.message : String(error),
+    });
+    sendError(res, 400, 'INVALID_EVENT', 'Failed to parse event payload');
+  }
+}
+
 async function handleAgentStatus(
   agentId: string,
   _req: IncomingMessage,
@@ -705,6 +732,12 @@ async function handleRequest(
     // Agent list
     if (path === '/api/v1/agents' && method === 'GET') {
       await handleAgentList(req, res);
+      return;
+    }
+
+    // Event ingestion (automation-core)
+    if (path === '/api/v1/events' && method === 'POST') {
+      await handleEvents(req, res);
       return;
     }
 
@@ -814,6 +847,7 @@ async function startServer(): Promise<void> {
 ║  Endpoints:                                                ║
 ║    GET  /health                                            ║
 ║    GET  /api/v1/agents                                     ║
+║    POST /api/v1/events                                     ║
 ║    POST /api/v1/agents/sdk-generator                       ║
 ║    POST /api/v1/agents/cli-generator                       ║
 ║    POST /api/v1/agents/api-translator                      ║
