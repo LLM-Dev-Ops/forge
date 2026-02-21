@@ -40,6 +40,7 @@
     "README.md"
   ],
   "scripts": {
+    "gcp-build": "",
     "build": "tsup",
     "build:watch": "tsup --watch",
     "clean": "rm -rf dist coverage .turbo node_modules/.cache",

@@ -36,3 +36,6 @@ export {
   type ArtifactRef,
   type SpanStatus,
 } from './service/execution-context.js';
+
+// Cloud Function entry point (forge-agents)
+export { handler } from './service/cloud-function.js';

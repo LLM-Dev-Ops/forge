@@ -52,4 +52,19 @@ export default defineConfig([
     tsconfig: 'tsconfig.json',
     shims: true,
   },
+  // Cloud Function build (for gcloud functions deploy)
+  {
+    entry: {
+      'service/cloud-function': 'src/service/cloud-function.ts',
+    },
+    format: ['esm'],
+    dts: false,
+    splitting: false,
+    sourcemap: true,
+    minify: false,
+    target: 'node20',
+    outDir: 'dist',
+    tsconfig: 'tsconfig.json',
+    shims: true,
+  },
 ]);

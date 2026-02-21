@@ -1,0 +1,48 @@
+# Cloud Function deployment ignore file
+# Pre-build with `npm run build` before deploying
+
+# Git
+.git
+.gitignore
+
+# Node modules (installed by Cloud Functions during deploy)
+node_modules/
+
+# Source (dist/ contains the built output)
+src/
+
+# Tests
+tests/
+coverage/
+*.test.ts
+*.spec.ts
+*.bench.ts
+vitest.config.*
+
+# Build tooling config
+tsup.config.ts
+tsconfig.json
+.eslintrc.*
+.prettierrc*
+.husky/
+.turbo/
+
+# IDE
+.vscode/
+.idea/
+
+# Container configs (not needed for Cloud Functions)
+deploy/Dockerfile
+deploy/service.yaml
+deploy/cloudbuild.yaml
+
+# Claude/AI config
+.claude/
+CLAUDE.md
+.claude-flow/
+
+# Misc
+*.md
+!README.md
+.env
+.env.*
