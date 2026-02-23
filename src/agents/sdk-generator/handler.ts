@@ -39,6 +39,7 @@ import { validator as schemaValidator } from '../../schema/validator.js';
 import { GeneratorOrchestrator } from '../../generators/generator-orchestrator.js';
 import { TargetLanguage } from '../../core/type-mapper.js';
 import { createHash, randomUUID } from 'crypto';
+import { type PipelineContext, findPlannerOutput } from '../../types/pipeline-context.js';
 
 // =============================================================================
 // AGENT METADATA
@@ -90,6 +91,8 @@ export interface EdgeFunctionContext {
   dryRun: boolean;
   /** RuVector service endpoint (for event emission) */
   ruvectorEndpoint?: string;
+  /** Pipeline context from upstream orchestration (optional) */
+  pipelineContext?: PipelineContext;
 }
 
 /**
@@ -191,6 +194,29 @@ export async function handler(
       return createErrorResponse(408, FailureMode.TIMEOUT, 'Insufficient execution time');
     }
 
+    // If pipeline_context contains planner output, use it to drive scaffolding
+    let plannerHints: Record<string, unknown> | undefined;
+    if (context.pipelineContext) {
+      const plannerOutput = findPlannerOutput(context.pipelineContext);
+      if (plannerOutput?.plan) {
+        const plan = plannerOutput.plan as Record<string, unknown>;
+        plannerHints = {
+          components: plan.components,
+          architecture: plan.architecture,
+        };
+        // Override package name from plan if not explicitly set
+        if (plan.architecture && typeof plan.architecture === 'string') {
+          request = {
+            ...request,
+            generationOptions: {
+              ...request.generationOptions,
+              scaffoldArchitecture: plan.architecture,
+            },
+          } as SDKGenerationRequest;
+        }
+      }
+    }
+
     // Generate SDKs
     const generationResult = await generateSDKs(request, context, emitter, inputHash);
 
@@ -216,7 +242,8 @@ export async function handler(
       },
       warnings: generationResult.warnings,
       errors: generationResult.errors,
-    };
+      ...(plannerHints ? { plannerHints } : {}),
+    } as SDKGenerationResponse;
 
     // Emit completed event (non-blocking)
     if (context.emitEvents) {

@@ -29,6 +29,7 @@ import {
   createConsoleTelemetryEmitter,
   generateExecutionRef,
 } from './telemetry.js';
+import { type PipelineContext, findSDKScaffoldOutput } from '../../types/pipeline-context.js';
 
 /**
  * HTTP request structure for Edge Function
@@ -59,6 +60,8 @@ export interface AgentHandlerConfig {
   telemetryEmitter?: TelemetryEmitter;
   /** Enable verbose logging */
   verbose?: boolean;
+  /** Pipeline context from upstream orchestration (optional) */
+  pipelineContext?: PipelineContext;
 }
 
 /**
@@ -208,7 +211,27 @@ export async function handleGenerate(
 
     await telemetry.emitValidationCompleted(Date.now() - validationStart);
 
-    const validatedInput = validation.data!;
+    let validatedInput = validation.data!;
+
+    // If pipeline_context contains SDK scaffold output, use it to align CLI wrappers
+    if (config.pipelineContext) {
+      const sdkOutput = findSDKScaffoldOutput(config.pipelineContext);
+      if (sdkOutput) {
+        const sdkArtifacts = sdkOutput.sdk_artifacts as
+          | Array<{ language: string; files: Array<{ path: string }> }>
+          | undefined;
+        // Derive command prefix from SDK package structure if not already set
+        if (sdkArtifacts && sdkArtifacts.length > 0 && !validatedInput.options.commandPrefix) {
+          validatedInput = {
+            ...validatedInput,
+            options: {
+              ...validatedInput.options,
+              commandPrefix: validatedInput.packageName,
+            },
+          };
+        }
+      }
+    }
 
     // Step 2: Generate CLI commands
     if (config.verbose) {

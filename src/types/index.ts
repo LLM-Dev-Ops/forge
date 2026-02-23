@@ -4,3 +4,4 @@
  */
 
 export * from './canonical-schema.js';
+export * from './pipeline-context.js';

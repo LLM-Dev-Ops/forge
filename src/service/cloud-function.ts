@@ -45,6 +45,12 @@ import {
   AGENT_VERSION as VC_AGENT_VERSION,
 } from '../agents/version-compatibility-agent/index.js';
 
+import {
+  type PipelineContext,
+  type PipelineArtifact,
+  createPipelineArtifact,
+} from '../types/pipeline-context.js';
+
 // =============================================================================
 // TYPES
 // =============================================================================
@@ -65,6 +71,7 @@ interface AgentInfo {
 interface AgentResult {
   status: number;
   data: unknown;
+  artifacts: PipelineArtifact[];
 }
 
 // =============================================================================
@@ -138,7 +145,11 @@ function buildExecutionMetadata(traceId: string) {
 // AGENT ROUTE HANDLERS
 // =============================================================================
 
-async function routeSDK(body: string, requestId: string): Promise<AgentResult> {
+async function routeSDK(
+  body: string,
+  requestId: string,
+  pipelineContext?: PipelineContext
+): Promise<AgentResult> {
   const startTime = Date.now();
   const context = {
     requestId,
@@ -147,46 +158,115 @@ async function routeSDK(body: string, requestId: string): Promise<AgentResult> {
     emitEvents: process.env.FEATURE_EMIT_EVENTS === 'true',
     dryRun: false,
     ruvectorEndpoint: process.env.RUVECTOR_SERVICE_URL,
+    pipelineContext,
   };
   const response = await sdkGeneratorHandler(body, context);
-  return { status: response.statusCode, data: JSON.parse(response.body) };
+  const data = JSON.parse(response.body) as Record<string, unknown>;
+
+  // Build typed artifacts from SDK generation output
+  const artifacts: PipelineArtifact[] = [];
+  if (data.success && data.artifacts) {
+    artifacts.push(
+      createPipelineArtifact('forge_scaffold', {
+        sdk_artifacts: data.artifacts,
+        compatibility: data.compatibility,
+      })
+    );
+  }
+
+  return { status: response.statusCode, data, artifacts };
 }
 
-async function routeCLI(body: string): Promise<AgentResult> {
+async function routeCLI(
+  body: string,
+  _requestId: string,
+  pipelineContext?: PipelineContext
+): Promise<AgentResult> {
   const input = JSON.parse(body);
-  const result = await cliGeneratorHandler(input, { verbose: false });
-  return { status: result.success ? 200 : 400, data: result };
+  const result = await cliGeneratorHandler(input, {
+    verbose: false,
+    pipelineContext,
+  });
+
+  // Build typed artifacts from CLI generation output
+  const artifacts: PipelineArtifact[] = [];
+  if (result.success && result.result) {
+    artifacts.push(
+      createPipelineArtifact('cli_wrapper', {
+        program: result.result.program,
+        files: result.result.files,
+        framework: result.result.framework,
+      })
+    );
+  }
+
+  return { status: result.success ? 200 : 400, data: result, artifacts };
 }
 
 async function routeAPITranslation(
   body: string,
-  requestId: string
+  requestId: string,
+  pipelineContext?: PipelineContext
 ): Promise<AgentResult> {
   const input = JSON.parse(body);
   const translator = new APITranslator({
     emitEvents: process.env.FEATURE_EMIT_EVENTS === 'true',
   });
   const result = await translator.translate({ ...input, requestId });
-  return { status: result.success ? 200 : 400, data: result };
+
+  // Build typed artifacts from translation output
+  const artifacts: PipelineArtifact[] = [];
+  if (result.success && result.result) {
+    artifacts.push(
+      createPipelineArtifact('api_translation', {
+        direction: result.result.direction,
+        mappings: result.result.mappings,
+        restEndpoints: result.result.restEndpoints,
+        sdkMethods: result.result.sdkMethods,
+        cliCommands: result.result.cliCommands,
+      })
+    );
+  }
+
+  return { status: result.success ? 200 : 400, data: result, artifacts };
 }
 
 async function routeVersionCompat(
   body: string,
-  requestId: string
+  requestId: string,
+  pipelineContext?: PipelineContext
 ): Promise<AgentResult> {
   const input = JSON.parse(body);
   const agent = new VersionCompatibilityAgent({
     emitEvents: process.env.FEATURE_EMIT_EVENTS === 'true',
   });
   const result = await agent.analyze({ ...input, requestId });
-  return { status: result.success ? 200 : 400, data: result };
+
+  // Build typed artifacts from version compat output
+  const artifacts: PipelineArtifact[] = [];
+  if (result.success) {
+    artifacts.push(
+      createPipelineArtifact('version_report', {
+        verdict: result.verdict,
+        summary: result.summary,
+        changes: result.changes,
+        versionRecommendation: result.versionRecommendation,
+      })
+    );
+  }
+
+  return { status: result.success ? 200 : 400, data: result, artifacts };
 }
 
-type RouteFn = (body: string, requestId: string) => Promise<AgentResult>;
+type RouteFn = (
+  body: string,
+  requestId: string,
+  pipelineContext?: PipelineContext
+) => Promise<AgentResult>;
 
 const ROUTE_HANDLERS: Record<string, RouteFn> = {
   sdk: routeSDK,
-  cli: (body: string, _requestId: string) => routeCLI(body),
+  cli: routeCLI,
   'api-translation': routeAPITranslation,
   'version-compat': routeVersionCompat,
 };
@@ -280,15 +360,43 @@ export async function handler(
 
   try {
     const body = await readBody(req);
+
+    // Extract pipeline_context from request body (if present)
+    let pipelineContext: PipelineContext | undefined;
+    try {
+      const parsed =
+        typeof req.body === 'object' && req.body !== null
+          ? (req.body as Record<string, unknown>)
+          : JSON.parse(body);
+      if (parsed.pipeline_context && typeof parsed.pipeline_context === 'object') {
+        pipelineContext = parsed.pipeline_context as PipelineContext;
+      }
+      // Use trace_id from pipeline context if available
+      if (pipelineContext?.execution_metadata?.trace_id) {
+        metadata.trace_id = pipelineContext.execution_metadata.trace_id;
+      }
+    } catch {
+      // Body parse failure is handled by the agent route handler
+    }
+
     const agentStart = Date.now();
-    const result = await routeFn(body, requestId);
+    const result = await routeFn(body, requestId, pipelineContext);
     const agentDuration = Date.now() - agentStart;
 
+    // Build response: backwards-compatible spread + new envelope fields
     const response = {
       ...(typeof result.data === 'object' && result.data !== null
         ? (result.data as Record<string, unknown>)
         : { data: result.data }),
-      execution_metadata: metadata,
+      // Pipeline envelope fields
+      result: result.data,
+      artifacts: result.artifacts,
+      execution_metadata: {
+        ...metadata,
+        agent: agentInfo.id,
+        domain: 'forge',
+        ...(pipelineContext ? { pipeline_context: pipelineContext } : {}),
+      },
       layers_executed: [
         { layer: 'AGENT_ROUTING', status: 'completed' },
         {
@@ -308,7 +416,13 @@ export async function handler(
         message:
           error instanceof Error ? error.message : 'Agent execution failed',
       },
-      execution_metadata: metadata,
+      result: null,
+      artifacts: [],
+      execution_metadata: {
+        ...metadata,
+        agent: agentInfo.id,
+        domain: 'forge',
+      },
       layers_executed: [
         { layer: 'AGENT_ROUTING', status: 'completed' },
         {
