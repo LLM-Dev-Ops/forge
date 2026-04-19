@@ -26,6 +26,7 @@ import {
   type CompatibilityVerdict,
   type ChangeSeverity,
   type ChangeCategory,
+  type SchemaVersionReference,
 } from '../contracts/version-compatibility.contract.js';
 import {
   VersionCompatibilityEventFactory,
@@ -79,52 +80,91 @@ export class VersionCompatibilityAgent {
   async analyze(request: CompatibilityAnalysisRequest): Promise<CompatibilityAnalysisResponse> {
     const startTime = Date.now();
     const events: VersionCompatibilityEvent[] = [];
+    const fallbackRequestId =
+      typeof (request as any)?.requestId === 'string'
+        ? (request as any).requestId
+        : randomUUID();
 
-    // Validate request
+    // Validate request shape (Zod will apply defaults to options.*)
     const validationResult = CompatibilityAnalysisRequestSchema.safeParse(request);
     if (!validationResult.success) {
       return this.createFailedResponse(
-        request.requestId,
-        CompatibilityFailureMode.INVALID_SOURCE_SCHEMA,
+        fallbackRequestId,
+        CompatibilityFailureMode.INVALID_SCHEMA,
         `Invalid request: ${validationResult.error.message}`,
         false
       );
     }
 
+    // CRITICAL: use the parsed object so defaults (analyzeCategories, ignorePaths,
+    // strictness, etc.) are applied. The original `request` may be missing fields.
+    const validated = validationResult.data;
+
+    // Explicitly verify schema metadata is populated. The Zod custom validator
+    // only checks that the keys `metadata`/`types`/`endpoints` exist; it does
+    // not verify that metadata.version / metadata.providerId are present and
+    // non-empty. Missing metadata must surface as INVALID_SCHEMA (400), not as
+    // a downstream null-ref crash.
+    const metadataIssue =
+      this.findInvalidSchemaIssue(validated.sourceSchema, 'sourceSchema') ??
+      this.findInvalidSchemaIssue(validated.targetSchema, 'targetSchema');
+    if (metadataIssue) {
+      return this.createFailedResponse(
+        validated.requestId,
+        CompatibilityFailureMode.INVALID_SCHEMA,
+        metadataIssue,
+        false,
+        this.safeVersionRef(validated.sourceSchema),
+        this.safeVersionRef(validated.targetSchema)
+      );
+    }
+
     // Calculate input hashes
-    const sourceHash = hashObject(request.sourceSchema);
-    const targetHash = hashObject(request.targetSchema);
-    const inputHash = hashObject({ sourceHash, targetHash, options: request.options });
+    const sourceHash = hashObject(validated.sourceSchema);
+    const targetHash = hashObject(validated.targetSchema);
+    const inputHash = hashObject({ sourceHash, targetHash, options: validated.options });
+
+    // Pre-compute version refs so failure responses can echo them back to the caller
+    const sourceVersionRef: SchemaVersionReference = {
+      providerId: validated.sourceSchema.metadata.providerId,
+      version: validated.sourceSchema.metadata.version,
+      schemaHash: sourceHash,
+    };
+    const targetVersionRef: SchemaVersionReference = {
+      providerId: validated.targetSchema.metadata.providerId,
+      version: validated.targetSchema.metadata.version,
+      schemaHash: targetHash,
+    };
 
     // Emit initiated event
     const initiatedEvent = this.eventFactory.createInitiatedEvent(
-      request.requestId,
+      validated.requestId,
       inputHash,
       {
-        sourceVersion: request.sourceSchema.metadata.version,
-        targetVersion: request.targetSchema.metadata.version,
+        sourceVersion: validated.sourceSchema.metadata.version,
+        targetVersion: validated.targetSchema.metadata.version,
         sourceSchemaHash: sourceHash,
         targetSchemaHash: targetHash,
-        strictness: request.options.strictness,
-        categoriesToAnalyze: request.options.analyzeCategories,
+        strictness: validated.options.strictness,
+        categoriesToAnalyze: validated.options.analyzeCategories,
       },
-      request.tracingContext
+      validated.tracingContext
     );
     events.push(initiatedEvent);
 
     try {
       // Verify provider compatibility
-      if (request.sourceSchema.metadata.providerId !== request.targetSchema.metadata.providerId) {
+      if (validated.sourceSchema.metadata.providerId !== validated.targetSchema.metadata.providerId) {
         const failedEvent = this.eventFactory.createFailedEvent(
-          request.requestId,
+          validated.requestId,
           inputHash,
           {
             failureMode: CompatibilityFailureMode.INCOMPATIBLE_PROVIDERS,
-            errorMessage: `Provider mismatch: ${request.sourceSchema.metadata.providerId} vs ${request.targetSchema.metadata.providerId}`,
+            errorMessage: `Provider mismatch: ${validated.sourceSchema.metadata.providerId} vs ${validated.targetSchema.metadata.providerId}`,
             recoverable: false,
             partialAnalysis: false,
           },
-          request.tracingContext
+          validated.tracingContext
         );
         events.push(failedEvent);
 
@@ -133,31 +173,39 @@ export class VersionCompatibilityAgent {
         }
 
         return this.createFailedResponse(
-          request.requestId,
+          validated.requestId,
           CompatibilityFailureMode.INCOMPATIBLE_PROVIDERS,
-          `Provider mismatch: ${request.sourceSchema.metadata.providerId} vs ${request.targetSchema.metadata.providerId}`,
-          false
+          `Provider mismatch: ${validated.sourceSchema.metadata.providerId} vs ${validated.targetSchema.metadata.providerId}`,
+          false,
+          sourceVersionRef,
+          targetVersionRef
         );
       }
 
       // Perform comparison
       const changes: CompatibilityChange[] = [];
       const warnings: string[] = [];
+      const categories = Array.isArray(validated.options.analyzeCategories)
+        ? validated.options.analyzeCategories
+        : [];
+      const ignorePaths = Array.isArray(validated.options.ignorePaths)
+        ? validated.options.ignorePaths
+        : [];
 
       // Compare types if requested
-      if (request.options.analyzeCategories.includes('types')) {
+      if (categories.includes('types')) {
         const typeChanges = await this.comparator.compareTypes(
-          request.sourceSchema,
-          request.targetSchema,
-          request.options.strictness,
-          request.options.ignorePaths
+          validated.sourceSchema,
+          validated.targetSchema,
+          validated.options.strictness,
+          ignorePaths
         );
         changes.push(...typeChanges);
 
         // Emit type comparison events
         for (const typeChange of typeChanges) {
           const typeEvent = this.eventFactory.createTypeComparisonEvent(
-            request.requestId,
+            validated.requestId,
             inputHash,
             {
               typeName: typeChange.path.split('.')[1] || typeChange.path,
@@ -166,19 +214,19 @@ export class VersionCompatibilityAgent {
               comparisonResult: this.mapSeverityToComparison(typeChange.severity),
               changesDetected: 1,
             },
-            request.tracingContext
+            validated.tracingContext
           );
           events.push(typeEvent);
         }
       }
 
       // Compare endpoints if requested
-      if (request.options.analyzeCategories.includes('endpoints')) {
+      if (categories.includes('endpoints')) {
         const endpointChanges = await this.comparator.compareEndpoints(
-          request.sourceSchema,
-          request.targetSchema,
-          request.options.strictness,
-          request.options.ignorePaths
+          validated.sourceSchema,
+          validated.targetSchema,
+          validated.options.strictness,
+          ignorePaths
         );
         changes.push(...endpointChanges);
 
@@ -186,7 +234,7 @@ export class VersionCompatibilityAgent {
         for (const endpointChange of endpointChanges) {
           const pathParts = endpointChange.path.split('.');
           const endpointEvent = this.eventFactory.createEndpointComparisonEvent(
-            request.requestId,
+            validated.requestId,
             inputHash,
             {
               endpointPath: pathParts[1] || endpointChange.path,
@@ -197,37 +245,47 @@ export class VersionCompatibilityAgent {
               parameterChanges: endpointChange.category.includes('parameter') ? 1 : 0,
               responseChanges: endpointChange.category.includes('response') ? 1 : 0,
             },
-            request.tracingContext
+            validated.tracingContext
           );
           events.push(endpointEvent);
         }
       }
 
       // Compare authentication if requested
-      if (request.options.analyzeCategories.includes('authentication')) {
+      if (categories.includes('authentication')) {
         const authChanges = await this.comparator.compareAuthentication(
-          request.sourceSchema,
-          request.targetSchema,
-          request.options.strictness
+          validated.sourceSchema,
+          validated.targetSchema,
+          validated.options.strictness
         );
         changes.push(...authChanges);
       }
 
       // Compare errors if requested
-      if (request.options.analyzeCategories.includes('errors')) {
+      if (categories.includes('errors')) {
         const errorChanges = await this.comparator.compareErrors(
-          request.sourceSchema,
-          request.targetSchema,
-          request.options.strictness
+          validated.sourceSchema,
+          validated.targetSchema,
+          validated.options.strictness
         );
         changes.push(...errorChanges);
+      }
+
+      // Compare metadata if requested
+      if (categories.includes('metadata')) {
+        const metadataChanges = await this.comparator.compareMetadata(
+          validated.sourceSchema,
+          validated.targetSchema,
+          validated.options.strictness
+        );
+        changes.push(...metadataChanges);
       }
 
       // Emit breaking change events
       const breakingChanges = changes.filter(c => c.severity === 'breaking');
       for (const change of breakingChanges) {
         const breakingEvent = this.eventFactory.createBreakingChangeEvent(
-          request.requestId,
+          validated.requestId,
           inputHash,
           {
             changeId: change.changeId,
@@ -239,7 +297,7 @@ export class VersionCompatibilityAgent {
             affectedComponents: change.impact.affectedComponents,
           },
           1.0,
-          request.tracingContext
+          validated.tracingContext
         );
         events.push(breakingEvent);
       }
@@ -248,32 +306,32 @@ export class VersionCompatibilityAgent {
       const summary = this.calculateSummary(changes);
 
       // Determine verdict
-      const verdict = this.determineVerdict(changes, request.options.strictness);
+      const verdict = this.determineVerdict(changes, validated.options.strictness);
 
       // Calculate version recommendation
       const versionRecommendation = this.calculateVersionRecommendation(
-        request.targetSchema.metadata.version,
+        validated.targetSchema.metadata.version,
         changes
       );
 
       // Emit version recommendation event
       const recommendationEvent = this.eventFactory.createVersionRecommendationEvent(
-        request.requestId,
+        validated.requestId,
         inputHash,
         {
-          currentVersion: request.targetSchema.metadata.version,
+          currentVersion: validated.targetSchema.metadata.version,
           recommendedBump: versionRecommendation.bumpType,
           recommendedVersion: versionRecommendation.recommendedVersion,
           rationale: versionRecommendation.rationale,
           breakingChangeCount: summary.breakingChanges,
-          constraintsApplied: ['semver-compliance', `strictness-${request.options.strictness}`],
+          constraintsApplied: ['semver-compliance', `strictness-${validated.options.strictness}`],
         },
-        request.tracingContext
+        validated.tracingContext
       );
       events.push(recommendationEvent);
 
       // Add upgrade guidance if requested
-      if (request.options.includeUpgradeGuidance) {
+      if (validated.options.includeUpgradeGuidance) {
         for (const change of changes) {
           change.upgradeGuidance = this.generateUpgradeGuidance(change);
         }
@@ -291,7 +349,7 @@ export class VersionCompatibilityAgent {
 
       // Emit completed event
       const completedEvent = this.eventFactory.createCompletedEvent(
-        request.requestId,
+        validated.requestId,
         inputHash,
         outputHash,
         {
@@ -304,7 +362,7 @@ export class VersionCompatibilityAgent {
           durationMs,
           determinismHash: outputHash,
         },
-        request.tracingContext
+        validated.tracingContext
       );
       events.push(completedEvent);
 
@@ -315,18 +373,10 @@ export class VersionCompatibilityAgent {
 
       // Build response
       const response: CompatibilityAnalysisResponse = {
-        requestId: request.requestId,
+        requestId: validated.requestId,
         success: true,
-        sourceVersion: {
-          providerId: request.sourceSchema.metadata.providerId,
-          version: request.sourceSchema.metadata.version,
-          schemaHash: sourceHash,
-        },
-        targetVersion: {
-          providerId: request.targetSchema.metadata.providerId,
-          version: request.targetSchema.metadata.version,
-          schemaHash: targetHash,
-        },
+        sourceVersion: sourceVersionRef,
+        targetVersion: targetVersionRef,
         verdict,
         summary,
         changes,
@@ -346,16 +396,27 @@ export class VersionCompatibilityAgent {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : String(error);
 
+      // Distinguish a true budget exceedance from an unhandled runtime crash.
+      // Anything else (e.g. `Cannot read properties of undefined`) is an
+      // INTERNAL_ERROR, not a timeout — masking it as ANALYSIS_TIMEOUT hides
+      // real bugs from upstream callers.
+      const isTimeout =
+        error instanceof Error &&
+        /timeout|timed? ?out|deadline/i.test(error.message);
+      const failureMode = isTimeout
+        ? CompatibilityFailureMode.ANALYSIS_TIMEOUT
+        : CompatibilityFailureMode.INTERNAL_ERROR;
+
       const failedEvent = this.eventFactory.createFailedEvent(
-        request.requestId,
+        validated.requestId,
         inputHash,
         {
-          failureMode: CompatibilityFailureMode.ANALYSIS_TIMEOUT,
+          failureMode,
           errorMessage,
           recoverable: false,
           partialAnalysis: false,
         },
-        request.tracingContext
+        validated.tracingContext
       );
       events.push(failedEvent);
 
@@ -364,12 +425,60 @@ export class VersionCompatibilityAgent {
       }
 
       return this.createFailedResponse(
-        request.requestId,
-        CompatibilityFailureMode.ANALYSIS_TIMEOUT,
+        validated.requestId,
+        failureMode,
         errorMessage,
-        false
+        false,
+        sourceVersionRef,
+        targetVersionRef
       );
     }
+  }
+
+  /**
+   * Validate that a schema has the metadata fields required for analysis.
+   * Returns a human-readable error message if invalid, or undefined if OK.
+   */
+  private findInvalidSchemaIssue(schema: unknown, label: string): string | undefined {
+    if (typeof schema !== 'object' || schema === null) {
+      return `${label} is not an object`;
+    }
+    const meta = (schema as { metadata?: unknown }).metadata;
+    if (typeof meta !== 'object' || meta === null) {
+      return `${label}.metadata is missing or not an object`;
+    }
+    const m = meta as Record<string, unknown>;
+    if (typeof m.version !== 'string' || m.version.length === 0) {
+      return `${label}.metadata.version is missing or not a string`;
+    }
+    if (typeof m.providerId !== 'string' || m.providerId.length === 0) {
+      return `${label}.metadata.providerId is missing or not a string`;
+    }
+    // Schema arrays — guard against null/undefined that would crash the comparator.
+    const s = schema as Record<string, unknown>;
+    for (const key of ['types', 'endpoints', 'authentication', 'errors']) {
+      const v = s[key];
+      if (v !== undefined && v !== null && !Array.isArray(v)) {
+        return `${label}.${key} must be an array`;
+      }
+    }
+    return undefined;
+  }
+
+  /**
+   * Best-effort version reference extraction. Used when reporting failures
+   * so the caller can correlate the response to its inputs even when the
+   * input was malformed.
+   */
+  private safeVersionRef(schema: unknown): SchemaVersionReference {
+    const meta = (schema as { metadata?: Record<string, unknown> } | null)?.metadata ?? {};
+    const version = typeof meta.version === 'string' && meta.version.length > 0
+      ? (meta.version as string)
+      : '0.0.0';
+    const providerId = typeof meta.providerId === 'string'
+      ? (meta.providerId as string)
+      : '';
+    return { providerId, version };
   }
 
   /**
@@ -552,13 +661,15 @@ export class VersionCompatibilityAgent {
     requestId: string,
     failureMode: CompatibilityFailureMode,
     errorMessage: string,
-    partialAnalysis: boolean
+    partialAnalysis: boolean,
+    sourceVersion?: SchemaVersionReference,
+    targetVersion?: SchemaVersionReference
   ): CompatibilityAnalysisResponse {
     return {
       requestId,
       success: false,
-      sourceVersion: { providerId: '', version: '0.0.0' },
-      targetVersion: { providerId: '', version: '0.0.0' },
+      sourceVersion: sourceVersion ?? { providerId: '', version: '0.0.0' },
+      targetVersion: targetVersion ?? { providerId: '', version: '0.0.0' },
       verdict: 'incompatible',
       summary: {
         totalChanges: 0,

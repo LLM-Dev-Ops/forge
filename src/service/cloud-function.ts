@@ -44,6 +44,7 @@ import {
   AGENT_ID as VC_AGENT_ID,
   AGENT_VERSION as VC_AGENT_VERSION,
 } from '../agents/version-compatibility-agent/index.js';
+import { CompatibilityFailureMode } from '../agents/contracts/version-compatibility.contract.js';
 
 import {
   type PipelineContext,
@@ -231,6 +232,33 @@ async function routeAPITranslation(
   return { status: result.success ? 200 : 400, data: result, artifacts };
 }
 
+/**
+ * Map an agent failure-mode string (formatted as "MODE: message") to an
+ * appropriate HTTP status code. Defaults to 400 for unknown modes.
+ */
+function versionCompatStatusFromError(errors: string[] | undefined): number {
+  if (!errors || errors.length === 0) return 500;
+  const head = String(errors[0]);
+  const mode = head.split(':')[0]?.trim();
+  switch (mode) {
+    case CompatibilityFailureMode.INVALID_SCHEMA:
+    case CompatibilityFailureMode.INVALID_SOURCE_SCHEMA:
+    case CompatibilityFailureMode.INVALID_TARGET_SCHEMA:
+    case CompatibilityFailureMode.SCHEMA_VERSION_MISMATCH:
+    case CompatibilityFailureMode.INCOMPATIBLE_PROVIDERS:
+      return 400;
+    case CompatibilityFailureMode.ANALYSIS_TIMEOUT:
+      return 504;
+    case CompatibilityFailureMode.INTERNAL_ERROR:
+    case CompatibilityFailureMode.RESOURCE_EXHAUSTION:
+    case CompatibilityFailureMode.TYPE_RESOLUTION_FAILURE:
+    case CompatibilityFailureMode.CIRCULAR_REFERENCE:
+      return 500;
+    default:
+      return 400;
+  }
+}
+
 async function routeVersionCompat(
   body: string,
   requestId: string,
@@ -255,7 +283,8 @@ async function routeVersionCompat(
     );
   }
 
-  return { status: result.success ? 200 : 400, data: result, artifacts };
+  const status = result.success ? 200 : versionCompatStatusFromError(result.errors);
+  return { status, data: result, artifacts };
 }
 
 type RouteFn = (

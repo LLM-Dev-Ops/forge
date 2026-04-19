@@ -1,0 +1,98 @@
+forge-agents: fix version-compat
+                                                                                                          
+  ## Current failure (reproducible from upstream CLI)                                                     
+                                                                                                          
+  POST /v1/forge/version-compat returns HTTP 400:                                                         
+                                               
+    { "requestId": "...",                                                                                 
+      "success": false,
+      "sourceVersion": { "providerId": "", "version": "0.0.0" },
+      "targetVersion": { "providerId": "", "version": "0.0.0" },                                          
+      "verdict": "incompatible",
+      "summary": { "totalChanges": 0, "breakingChanges": 0, ... },                                        
+      "changes": [],                                                                                      
+      "versionRecommendation": { "bumpType": "none",
+                                 "recommendedVersion": "0.0.0",                                           
+                                 "rationale": "Analysis failed" },
+      "analysisMetadata": { "durationMs": 0, "determinismHash": "", ... },                                
+      "warnings": [],                                                                                     
+      "errors": ["ANALYSIS_TIMEOUT: Cannot read properties of undefined
+                  (reading 'includes')"] }                                                                
+                
+  ## TWO bugs here, not one. Fix both.                                                                    
+                
+  ### Bug 1 (root cause): schema → version extraction is broken                                           
+                
+  The upstream CLI sends rich schemas, NOT pre-extracted versions:                                        
+                
+    {                                                                                                     
+      "requestId": "<uuid>",
+      "sourceSchema": {                        
+        "metadata": { "version": "1.0.0", "providerId": "agentics",                                       
+                      "providerName": "Agentics Platform",
+                      "apiVersion": "v1", "generatedAt": "..." },                                         
+        "types": [...], "endpoints": [...], ...
+      },                                                                                                  
+      "targetSchema": {
+        "metadata": { "version": "2.0.0", "providerId": "agentics",                                       
+                      "apiVersion": "v2", ... },
+        ...                                                                                               
+      },        
+      "options": { "strictness": "lenient", "includeInfoChanges": true }                                  
+    }           
+                                               
+  The server's response echoes sourceVersion/targetVersion as                                             
+  `{providerId:"", version:"0.0.0"}` — i.e., the handler is NOT reading
+  metadata.version and metadata.providerId from the incoming                                              
+  sourceSchema/targetSchema. Find the extraction path (something like                                     
+  schemaToVersion(schema) or extractVersion(schema)) and fix it to read                                   
+  schema.metadata.version and schema.metadata.providerId. This is why the                                 
+  subsequent .includes() call blows up — the string it operates on was                                    
+  never populated.                                                                                        
+                                                                                                          
+  ### Bug 2 (symptom + error masking): the .includes() crash                                              
+                                                                                                          
+  Once versions extract correctly, trace the remaining .includes() call.                                  
+  Add a guard so the handler never calls methods on undefined, even for
+  malformed input.                                                                                        
+                                                                                                          
+  ### Bug 3 (bonus, but important): error-code masking                                                    
+                                                                                                          
+  Every internal error is being wrapped as "ANALYSIS_TIMEOUT". That is                                    
+  wrong and hides real bugs from callers. Map errors properly:
+    - Missing/unreadable schema metadata → 400 "INVALID_SCHEMA"                                           
+    - Genuine timeout (>N seconds) → 504 "ANALYSIS_TIMEOUT"                                               
+    - Null-ref or other runtime crash → 500 "INTERNAL_ERROR" with the                                     
+      real message.                                                                                       
+                                                                                                          
+  ## Success criteria (do NOT declare "fixed" until all pass)                                             
+                                               
+  1. Hit the endpoint with the payload above. HTTP 200, success:true.                                     
+  2. Response sourceVersion = {providerId:"agentics", version:"1.0.0"},
+     targetVersion = {providerId:"agentics", version:"2.0.0"} — these                                     
+     MUST reflect the input schemas, not empty defaults.                                                  
+  3. `changes` array reflects the v1→v2 diff (apiVersion changed,                                         
+     metadata.version bumped). "changes:[]" with no real diff means the                                   
+     comparator isn't running — that's still a failure.                                                   
+  4. versionRecommendation.bumpType is "major" (1.0.0 → 2.0.0 with                                        
+     apiVersion change). If it says "none", the compat logic is broken.                                   
+  5. A payload with ACTUALLY bad input (e.g. sourceSchema missing                                         
+     metadata.version entirely) should return 400 INVALID_SCHEMA — NOT                                    
+     ANALYSIS_TIMEOUT — with a message that names the missing field.                                      
+                                                                                                          
+  Do NOT "fix" this by adding `?? ""` to the .includes() call. That                                       
+  returns 200 with empty versions and empty changes — a false success                                     
+  that the upstream probe will flag.                                                                      
+                                                                                                          
+  ## Redeploy                                                                                             
+                                                                                                          
+  Gen2 Cloud Function on project agentics-dev, region us-central1. Use                                    
+  the repo's existing deploy script if one exists. Otherwise:
+                                                                                                          
+    gcloud functions describe forge-agents --gen2 --region=us-central1 \                                  
+      --format="yaml(buildConfig.entryPoint, serviceConfig.availableMemory,                               
+                     serviceConfig.timeoutSeconds,                                                        
+                     serviceConfig.environmentVariables)"                                                 
+    gcloud functions deploy forge-agents \                                                                
+      --gen2 --region=us-central1 --source=. \                                                            
+      --entry-point=<from-describe> --runtime=nodejs20 --trigger-http

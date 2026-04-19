@@ -44,8 +44,8 @@ export class SchemaComparator {
     const changes: CompatibilityChange[] = [];
 
     // Index types by ID for efficient lookup
-    const sourceTypes = new Map(source.types.map(t => [t.id, t]));
-    const targetTypes = new Map(target.types.map(t => [t.id, t]));
+    const sourceTypes = new Map((source.types ?? []).map(t => [t.id, t]));
+    const targetTypes = new Map((target.types ?? []).map(t => [t.id, t]));
 
     // Check for removed types (breaking)
     for (const [id, sourceType] of sourceTypes) {
@@ -364,8 +364,8 @@ export class SchemaComparator {
     const changes: CompatibilityChange[] = [];
 
     // Index endpoints by operationId
-    const sourceEndpoints = new Map(source.endpoints.map(e => [e.operationId, e]));
-    const targetEndpoints = new Map(target.endpoints.map(e => [e.operationId, e]));
+    const sourceEndpoints = new Map((source.endpoints ?? []).map(e => [e.operationId, e]));
+    const targetEndpoints = new Map((target.endpoints ?? []).map(e => [e.operationId, e]));
 
     // Check for removed endpoints (breaking)
     for (const [opId, sourceEndpoint] of sourceEndpoints) {
@@ -624,8 +624,8 @@ export class SchemaComparator {
   ): Promise<CompatibilityChange[]> {
     const changes: CompatibilityChange[] = [];
 
-    const sourceAuth = new Map(source.authentication.map(a => [a.id, a]));
-    const targetAuth = new Map(target.authentication.map(a => [a.id, a]));
+    const sourceAuth = new Map((source.authentication ?? []).map(a => [a.id, a]));
+    const targetAuth = new Map((target.authentication ?? []).map(a => [a.id, a]));
 
     // Removed auth schemes (breaking)
     for (const [id, sourceScheme] of sourceAuth) {
@@ -689,8 +689,8 @@ export class SchemaComparator {
   ): Promise<CompatibilityChange[]> {
     const changes: CompatibilityChange[] = [];
 
-    const sourceErrors = new Map(source.errors.map(e => [e.code, e]));
-    const targetErrors = new Map(target.errors.map(e => [e.code, e]));
+    const sourceErrors = new Map((source.errors ?? []).map(e => [e.code, e]));
+    const targetErrors = new Map((target.errors ?? []).map(e => [e.code, e]));
 
     // Removed errors (non-breaking - clients should be able to handle unknown errors)
     for (const [code, sourceError] of sourceErrors) {
@@ -726,13 +726,69 @@ export class SchemaComparator {
   }
 
   /**
+   * Compare schema metadata (apiVersion, version, providerName, etc.).
+   * apiVersion change is treated as breaking because it usually signals a
+   * major API revision (v1 → v2). Other metadata changes are informational.
+   */
+  async compareMetadata(
+    source: CanonicalSchema,
+    target: CanonicalSchema,
+    _strictness: Strictness
+  ): Promise<CompatibilityChange[]> {
+    const changes: CompatibilityChange[] = [];
+    const s = source.metadata ?? ({} as CanonicalSchema['metadata']);
+    const t = target.metadata ?? ({} as CanonicalSchema['metadata']);
+
+    if (s.apiVersion !== t.apiVersion) {
+      changes.push(this.createChange({
+        category: 'metadata-changed',
+        severity: 'breaking',
+        path: 'metadata.apiVersion',
+        description: `API version changed from "${s.apiVersion}" to "${t.apiVersion}"`,
+        sourceValue: s.apiVersion,
+        targetValue: t.apiVersion,
+        affectedComponents: ['*'],
+        migrationComplexity: 5,
+      }));
+    }
+
+    if (s.version !== t.version) {
+      changes.push(this.createChange({
+        category: 'metadata-changed',
+        severity: 'informational',
+        path: 'metadata.version',
+        description: `Schema version bumped from "${s.version}" to "${t.version}"`,
+        sourceValue: s.version,
+        targetValue: t.version,
+        affectedComponents: [],
+        migrationComplexity: 1,
+      }));
+    }
+
+    if (s.providerName !== t.providerName) {
+      changes.push(this.createChange({
+        category: 'metadata-changed',
+        severity: 'informational',
+        path: 'metadata.providerName',
+        description: `Provider name changed from "${s.providerName}" to "${t.providerName}"`,
+        sourceValue: s.providerName,
+        targetValue: t.providerName,
+        affectedComponents: [],
+        migrationComplexity: 1,
+      }));
+    }
+
+    return changes;
+  }
+
+  /**
    * Find references to a type in the schema
    */
   private findTypeReferences(schema: CanonicalSchema, typeId: string): string[] {
     const references: string[] = [];
 
     // Check other types
-    for (const type of schema.types) {
+    for (const type of schema.types ?? []) {
       if (type.kind === 'object') {
         for (const prop of (type as any).properties || []) {
           if (prop.type?.typeId === typeId) {
@@ -748,7 +804,7 @@ export class SchemaComparator {
     }
 
     // Check endpoints
-    for (const endpoint of schema.endpoints) {
+    for (const endpoint of schema.endpoints ?? []) {
       // Check request body
       if (endpoint.requestBody?.type?.typeId === typeId) {
         references.push(`${endpoint.operationId}.requestBody`);

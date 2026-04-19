@@ -107,7 +107,7 @@ export const CompatibilityAnalysisRequestSchema = z.object({
       'authentication',
       'errors',
       'metadata',
-    ])).default(['types', 'endpoints', 'authentication', 'errors']),
+    ])).default(['types', 'endpoints', 'authentication', 'errors', 'metadata']),
     /** Ignore specific paths/types from analysis */
     ignorePaths: z.array(z.string()).default([]),
   }).default({}),
@@ -528,6 +528,8 @@ export const NON_RESPONSIBILITIES = [
  * Known failure modes and handling
  */
 export enum CompatibilityFailureMode {
+  /** Generic invalid schema (missing/unreadable metadata, malformed shape) */
+  INVALID_SCHEMA = 'INVALID_SCHEMA',
   /** Invalid source schema */
   INVALID_SOURCE_SCHEMA = 'INVALID_SOURCE_SCHEMA',
   /** Invalid target schema */
@@ -536,7 +538,7 @@ export enum CompatibilityFailureMode {
   SCHEMA_VERSION_MISMATCH = 'SCHEMA_VERSION_MISMATCH',
   /** Incompatible provider IDs */
   INCOMPATIBLE_PROVIDERS = 'INCOMPATIBLE_PROVIDERS',
-  /** Analysis timeout */
+  /** Analysis exceeded the configured time budget */
   ANALYSIS_TIMEOUT = 'ANALYSIS_TIMEOUT',
   /** Resource exhaustion */
   RESOURCE_EXHAUSTION = 'RESOURCE_EXHAUSTION',
@@ -544,12 +546,22 @@ export enum CompatibilityFailureMode {
   TYPE_RESOLUTION_FAILURE = 'TYPE_RESOLUTION_FAILURE',
   /** Circular reference detected */
   CIRCULAR_REFERENCE = 'CIRCULAR_REFERENCE',
+  /** Unhandled runtime error (null-ref, type error, etc.) */
+  INTERNAL_ERROR = 'INTERNAL_ERROR',
 }
 
 export const FailureModeHandling: Record<
   CompatibilityFailureMode,
   { recoverable: boolean; action: string }
 > = {
+  [CompatibilityFailureMode.INVALID_SCHEMA]: {
+    recoverable: false,
+    action: 'Return validation errors naming the missing/malformed field',
+  },
+  [CompatibilityFailureMode.INTERNAL_ERROR]: {
+    recoverable: false,
+    action: 'Return runtime error message; do not mask as ANALYSIS_TIMEOUT',
+  },
   [CompatibilityFailureMode.INVALID_SOURCE_SCHEMA]: {
     recoverable: false,
     action: 'Return validation errors for source schema',

@@ -65,6 +65,30 @@ import {
   AGENT_ID as VC_AGENT_ID,
   AGENT_VERSION as VC_AGENT_VERSION,
 } from '../agents/version-compatibility-agent/index.js';
+import { CompatibilityFailureMode } from '../agents/contracts/version-compatibility.contract.js';
+
+function versionCompatHttpStatus(errors: string[] | undefined, success: boolean): number {
+  if (success) return 200;
+  if (!errors || errors.length === 0) return 500;
+  const mode = String(errors[0]).split(':')[0]?.trim();
+  switch (mode) {
+    case CompatibilityFailureMode.INVALID_SCHEMA:
+    case CompatibilityFailureMode.INVALID_SOURCE_SCHEMA:
+    case CompatibilityFailureMode.INVALID_TARGET_SCHEMA:
+    case CompatibilityFailureMode.SCHEMA_VERSION_MISMATCH:
+    case CompatibilityFailureMode.INCOMPATIBLE_PROVIDERS:
+      return 400;
+    case CompatibilityFailureMode.ANALYSIS_TIMEOUT:
+      return 504;
+    case CompatibilityFailureMode.INTERNAL_ERROR:
+    case CompatibilityFailureMode.RESOURCE_EXHAUSTION:
+    case CompatibilityFailureMode.TYPE_RESOLUTION_FAILURE:
+    case CompatibilityFailureMode.CIRCULAR_REFERENCE:
+      return 500;
+    default:
+      return 400;
+  }
+}
 
 // =============================================================================
 // CONFIGURATION
@@ -595,7 +619,7 @@ async function handleVersionCompatibility(
       ? JSON.stringify(execCtx.buildResponse(result))
       : resultJson;
 
-    res.writeHead(result.success ? 200 : 400, {
+    res.writeHead(versionCompatHttpStatus(result.errors, result.success), {
       'Content-Type': 'application/json',
       'X-Request-ID': requestId,
       'X-Agent-ID': VC_AGENT_ID,
