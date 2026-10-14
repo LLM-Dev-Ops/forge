@@ -22,6 +22,7 @@ import {
   AGENT_CLASSIFICATION,
   NON_RESPONSIBILITIES,
   CompatibilityFailureMode,
+  CLIContract,
 } from '../../src/agents/contracts/version-compatibility.contract.js';
 import { VersionCompatibilityEventFactory } from '../../src/agents/contracts/decision-events.js';
 import type { CanonicalSchema } from '../../src/types/canonical-schema.js';
@@ -597,8 +598,7 @@ describe('Verification Checklist', () => {
   });
 
   it('should expose CLI-invokable endpoint', () => {
-    // CLI contract is defined
-    const { CLIContract } = require('../../src/agents/contracts/version-compatibility.contract.js');
+    // CLI contract is exported through the same ESM module as the rest of the contract.
     expect(CLIContract.command).toBe('validate');
     expect(CLIContract.arguments.length).toBeGreaterThan(0);
     expect(CLIContract.options.length).toBeGreaterThan(0);
