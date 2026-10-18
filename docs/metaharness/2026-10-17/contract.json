@@ -1,0 +1,32 @@
+{
+  "baseline": "733f97caefd62ca750e69ba1b24153363a836e19",
+  "scope": "CLI generator invalid JSON value classification; no external persistence or deployment claims",
+  "holdout": [
+    "null",
+    "array",
+    "string",
+    "number",
+    "missing fields",
+    "invalid framework",
+    "untrusted coercion property"
+  ],
+  "acceptance": "Each holdout returns HTTP400 with schema validation errors, not HTTP500 or a TypeError; no coercion of unvalidated JSON metadata",
+  "anchor": [
+    "malformed JSON remains400",
+    "unsupported method remains405",
+    "health remains200",
+    "contract remains200",
+    "all1070existing tests remain passing",
+    "build remains passing"
+  ],
+  "wholeRepositoryMerge": "All existing type, lint, format, coverage, security and required CI gates must pass; no threshold, test, exclusion or policy weakening",
+  "darwin": {
+    "generations": 1,
+    "children": 2,
+    "concurrency": 1,
+    "seed": 2026101720,
+    "sandbox": "real",
+    "selection": "pareto"
+  },
+  "limits": "One isolated writer; no new services or paid provision, no network model loading; no Rust source or persistence changes"
+}

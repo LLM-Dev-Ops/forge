@@ -20,10 +20,15 @@ import {
   CLIGeneratorInputSchema,
   CLIGenerationResult,
   CLI_COMMAND_GENERATOR_CONTRACT,
+  CLIFramework,
   type CLIGeneratorInput,
 } from './types.js';
 import { generateCLICommands } from './generator.js';
-import { createDecisionEmitter, createMockDecisionEmitter, type RuVectorClient } from './decision-emitter.js';
+import {
+  createDecisionEmitter,
+  createMockDecisionEmitter,
+  type RuVectorClient,
+} from './decision-emitter.js';
 import {
   TelemetryEmitter,
   createConsoleTelemetryEmitter,
@@ -69,6 +74,8 @@ export interface AgentHandlerConfig {
  */
 export interface HandlerResult {
   success: boolean;
+  /** Machine-readable classification; never infer status from error text. */
+  failureType?: 'validation' | 'internal';
   result?: CLIGenerationResult;
   eventId?: string;
   errors?: string[];
@@ -78,11 +85,9 @@ export interface HandlerResult {
 /**
  * Validate input against the schema
  */
-function validateInput(input: unknown): {
-  success: boolean;
-  data?: CLIGeneratorInput;
-  errors?: string[];
-} {
+function validateInput(
+  input: unknown
+): { success: true; data: CLIGeneratorInput } | { success: false; errors: string[] } {
   const result = CLIGeneratorInputSchema.safeParse(input);
 
   if (result.success) {
@@ -96,10 +101,7 @@ function validateInput(input: unknown): {
 /**
  * Create JSON response
  */
-function jsonResponse(
-  data: unknown,
-  statusCode: number = 200
-): EdgeFunctionResponse {
+function jsonResponse(data: unknown, statusCode: number = 200): EdgeFunctionResponse {
   return {
     statusCode,
     headers: {
@@ -166,10 +168,16 @@ export async function handleGenerate(
 
   try {
     // Emit agent invocation telemetry
-    const rawInput = input as Record<string, unknown>;
+    // Telemetry must not dereference null or coerce unvalidated JSON objects.
+    const rawInput =
+      typeof input === 'object' && input !== null && !Array.isArray(input)
+        ? (input as Record<string, unknown>)
+        : {};
+    const metadataString = (key: string, fallback: string): string =>
+      typeof rawInput[key] === 'string' ? rawInput[key] : fallback;
     await telemetry.emitAgentInvoked({
-      contractId: String(rawInput.contractId ?? 'unknown'),
-      framework: String(rawInput.framework ?? 'commander'),
+      contractId: metadataString('contractId', 'unknown'),
+      framework: metadataString('framework', 'commander'),
       endpointCount: Array.isArray(rawInput.endpoints) ? rawInput.endpoints.length : 0,
     });
 
@@ -188,22 +196,23 @@ export async function handleGenerate(
 
       // Emit failure decision event
       const failureInput: CLIGeneratorInput = {
-        contractId: String(rawInput.contractId ?? 'unknown'),
-        contractVersion: String(rawInput.contractVersion ?? '0.0.0'),
+        contractId: metadataString('contractId', 'unknown'),
+        contractVersion: metadataString('contractVersion', '0.0.0'),
         endpoints: [],
         types: [],
-        framework: 'commander' as const,
-        packageName: String(rawInput.packageName ?? 'unknown'),
+        framework: CLIFramework.Commander,
+        packageName: metadataString('packageName', 'unknown'),
         packageVersion: '0.0.0',
-        providerId: String(rawInput.providerId ?? 'unknown'),
-        providerName: String(rawInput.providerName ?? 'Unknown'),
-        options: {},
+        providerId: metadataString('providerId', 'unknown'),
+        providerName: metadataString('providerName', 'Unknown'),
+        options: { includeExamples: true, generateHandlers: true, generateTypes: true },
       };
 
       await decisionEmitter.emitFailureEvent(failureInput, validation.errors ?? []);
 
       return {
         success: false,
+        failureType: 'validation',
         errors: validation.errors,
         executionRef,
       };
@@ -211,7 +220,7 @@ export async function handleGenerate(
 
     await telemetry.emitValidationCompleted(Date.now() - validationStart);
 
-    let validatedInput = validation.data!;
+    let validatedInput = validation.data;
 
     // If pipeline_context contains SDK scaffold output, use it to align CLI wrappers
     if (config.pipelineContext) {
@@ -297,6 +306,7 @@ export async function handleGenerate(
 
     return {
       success: false,
+      failureType: 'internal',
       errors: [error instanceof Error ? error.message : String(error)],
       executionRef,
     };
@@ -316,12 +326,7 @@ export async function edgeFunctionHandler(
 
   // Only accept POST requests
   if (request.method !== 'POST') {
-    return errorResponse(
-      'METHOD_NOT_ALLOWED',
-      'Only POST method is supported',
-      405,
-      executionRef
-    );
+    return errorResponse('METHOD_NOT_ALLOWED', 'Only POST method is supported', 405, executionRef);
   }
 
   // Parse request body
@@ -329,12 +334,7 @@ export async function edgeFunctionHandler(
   try {
     body = typeof request.body === 'string' ? JSON.parse(request.body) : request.body;
   } catch {
-    return errorResponse(
-      'INVALID_JSON',
-      'Request body must be valid JSON',
-      400,
-      executionRef
-    );
+    return errorResponse('INVALID_JSON', 'Request body must be valid JSON', 400, executionRef);
   }
 
   // Handle the request
@@ -366,7 +366,7 @@ export async function edgeFunctionHandler(
       event_id: result.eventId,
       errors: result.errors,
     },
-    result.errors?.some((e) => e.includes('VALIDATION')) ? 400 : 500
+    result.failureType === 'validation' ? 400 : 500
   );
 }
 
