@@ -6,8 +6,20 @@ import { createHash } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 const [b,h,t,o]=process.argv.slice(2).map(x=>resolve(x));
 const sha=x=>createHash('sha256').update(x).digest('hex');
-const frozen=['tests/service/verify-contract-exports.mjs','tests/contracts/namespace.test.ts','package-lock.json','tsconfig.json','vitest.config.ts'];
+const frozen=['tests/service/verify-contract-exports.mjs','tests/contracts/namespace.test.ts','tsconfig.json','vitest.config.ts'];
 for(const p of frozen)if(!readFileSync(join(b,p)).equals(readFileSync(join(h,p))))throw Error('Frozen bytes changed: '+p);
+// The corrective candidate explicitly adds the resolver already required by
+// ESLint configuration; no other direct manifest change or existing package
+// version change is permitted. Install each locked graph independently.
+const baselineManifest=JSON.parse(readFileSync(join(b,'package.json'))),candidateManifest=JSON.parse(readFileSync(join(h,'package.json')));
+if(baselineManifest.devDependencies['eslint-import-resolver-typescript']!==undefined||candidateManifest.devDependencies['eslint-import-resolver-typescript']!=='3.5.5')throw Error('Unexpected resolver dependency change');
+const comparison=structuredClone(candidateManifest);delete comparison.devDependencies['eslint-import-resolver-typescript'];
+if(JSON.stringify(comparison)!==JSON.stringify(baselineManifest))throw Error('Unapproved manifest change');
+const baselineLock=JSON.parse(readFileSync(join(b,'package-lock.json'))),candidateLock=JSON.parse(readFileSync(join(h,'package-lock.json')));
+for(const[path,pkg]of Object.entries(baselineLock.packages))if(path&&candidateLock.packages[path]?.version!==pkg.version)throw Error('Existing locked package version changed: '+path);
+const resolver=candidateLock.packages['node_modules/eslint-import-resolver-typescript'];
+if(resolver.version!=='3.5.5'||resolver.integrity!=='sha512-TdJqPHs2lW5J9Zpe17DZNQuDnox4xo2o+0tE7Pggain9Rbc19ik8kFtXdxZ250FVx2kF4vlt2RSf4qlUpG7bhw==')throw Error('Resolver integrity drift');
+const dependencyChange={name:'eslint-import-resolver-typescript',version:resolver.version,integrity:resolver.integrity,baselineLockSha256:sha(readFileSync(join(b,'package-lock.json'))),candidateLockSha256:sha(readFileSync(join(h,'package-lock.json'))),existingLockedVersionsRetained:true};
 const logs=mkdtempSync(join(tmpdir(),'forge-contracts-eval-'));
 function run(repo,label,key,command,args,seconds){const start=Date.now(),r=spawnSync(command,args,{cwd:repo,encoding:'utf8',timeout:seconds*1000,maxBuffer:32*1024*1024});const output=(r.stdout||'')+(r.stderr||'');writeFileSync(join(logs,label+'-'+key+'.log'),output);return {command:[command,...args],exit:r.status,signal:r.signal,error:r.error?.message??null,elapsedMs:Date.now()-start,outputSha256:sha(output),pass:r.status===0&&!r.error&&!r.signal};}
 function measure(repo,label){
@@ -40,5 +52,5 @@ const gateEvidence={baseline:score(baseline,'holdout'),candidate:score(candidate
 const result=await runFlywheelGenerations({rootPolicy:{revision:baselineRevision},proposer:async()=>({value:candidateRevision,summary:'Resolve contract barrel ambiguity with complete per-agent namespaces while retaining all unambiguous exports',inverse:{path:source,parentBytes,hash:sha(parentBytes)}}),evaluator:async(policy,suite)=>score(policy.revision===baselineRevision?baseline:candidate,suite.id==='contracts-holdout'?'holdout':'anchor'),holdout:{id:'contracts-holdout',items:candidate.probe.holdout.map(x=>x.name)},anchor:{id:'contracts-anchor',items:candidate.probe.anchors.map(x=>x.name)},mutationTargets:['revision'],maxGenerations:1,signer:makeSigner(),promotionRule:meetsPromotionRule,dataSource:'LIVE'});
 const fingerprint=gateFingerprint(meetsPromotionRule),replay=verifyReplayBundle(result.replayBundle,{pinnedGateFingerprint:fingerprint});
 const compact=m=>{const {passing,...rest}=m;return {...rest,passingNamesSha256:sha(JSON.stringify(passing))};};
-writeFileSync(o,JSON.stringify({baselineRevision,candidateRevision,versions:{flywheel:'0.1.12',node:process.version},frozen:Object.fromEntries(frozen.map(p=>[p,sha(readFileSync(join(b,p)))])),measurements:{baseline:compact(baseline),candidate:compact(candidate)},lostPreviouslyPassing:lost,gateEvidence,decision:meetsPromotionRule(gateEvidence),fingerprint,result,replay,rollback:{path:source,parentBytes,hash:sha(parentBytes),reversePatchCheckExit:0,productionRollbackExecuted:false},logs,limitations:'Unmeasured neutral cost; failed-contract ratio is a proxy, not observed noops. Failed native/global checks cannot be waived by component results.'},null,2));
+writeFileSync(o,JSON.stringify({baselineRevision,candidateRevision,versions:{flywheel:'0.1.12',node:process.version},frozen:Object.fromEntries(frozen.map(p=>[p,sha(readFileSync(join(b,p)))])),dependencyChange,measurements:{baseline:compact(baseline),candidate:compact(candidate)},lostPreviouslyPassing:lost,gateEvidence,decision:meetsPromotionRule(gateEvidence),fingerprint,result,replay,rollback:{path:source,parentBytes,hash:sha(parentBytes),reversePatchCheckExit:0,productionRollbackExecuted:false},logs,limitations:'Unmeasured neutral cost; failed-contract ratio is a proxy, not observed noops. Failed native/global checks cannot be waived by component results.'},null,2));
 console.log(JSON.stringify({baselineRevision,candidateRevision,baseline:baseline.passedTests,candidate:candidate.passedTests,lost:lost.length,promotions:result.promotions,decision:meetsPromotionRule(gateEvidence),replay,logs}));

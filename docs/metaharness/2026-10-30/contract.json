@@ -5,8 +5,29 @@
   "holdout": "All exports of each of four contract modules must be available through the corresponding named namespace, with exact object/function identity",
   "anchors": "All five modules' existing unambiguous runtime exports retain ownership; shared flat names remain absent; every original passing Vitest test retained",
   "gates": "Full Node build/type/lint/format/coverage and security plus real locked Rust test/build/Clippy/fmt must pass; errors, timeouts and lost passing tests fail closed",
-  "boundsSeconds": { "test": 120, "build": 90, "quality": 90, "audit": 45, "rust": 60 },
-  "optimization": { "generations": 1, "children": 1, "concurrency": 1, "seed": 202610301428, "riskBudget": 0 },
+  "boundsSeconds": {
+    "test": 120,
+    "build": 90,
+    "quality": 90,
+    "audit": 45,
+    "rust": 60
+  },
+  "optimization": {
+    "generations": 1,
+    "children": 1,
+    "concurrency": 1,
+    "seed": 202610301428,
+    "riskBudget": 0
+  },
   "architecture": "No contract owner implementation, agent persistence, Rust source, IAM/GCP deployment or database change",
-  "metricLimitations": "Primary is native namespace correctness, not model performance; noopRate is failed-contract ratio; costPerWin is unmeasured neutral zero"
+  "metricLimitations": "Primary is native namespace correctness, not model performance; noopRate is failed-contract ratio; costPerWin is unmeasured neutral zero",
+  "permittedDependencyChange": {
+    "name": "eslint-import-resolver-typescript",
+    "version": "3.5.5",
+    "reason": "Install the resolver already selected by existing ESLint configuration; no lint rules disabled",
+    "independentLockedDependencyInstall": true,
+    "otherManifestChanges": false,
+    "existingLockedPackageVersionChanges": false,
+    "rejectedVersion": "3.10.1: ERESOLVE optional peer conflict; no force/legacy-peer bypass"
+  }
 }
