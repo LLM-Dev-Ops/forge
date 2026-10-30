@@ -1,0 +1,251 @@
+{
+  "contract": {
+    "baseline": "733f97caefd62ca750e69ba1b24153363a836e19",
+    "scope": "CLI generator invalid JSON value classification; no external persistence or deployment claims",
+    "holdout": [
+      "null",
+      "array",
+      "string",
+      "number",
+      "missing fields",
+      "invalid framework",
+      "untrusted coercion property"
+    ],
+    "acceptance": "Each holdout returns HTTP400 with schema validation errors, not HTTP500 or a TypeError; no coercion of unvalidated JSON metadata",
+    "anchor": [
+      "malformed JSON remains400",
+      "unsupported method remains405",
+      "health remains200",
+      "contract remains200",
+      "all1070existing tests remain passing",
+      "build remains passing"
+    ],
+    "wholeRepositoryMerge": "All existing type, lint, format, coverage, security and required CI gates must pass; no threshold, test, exclusion or policy weakening",
+    "darwin": {
+      "generations": 1,
+      "children": 2,
+      "concurrency": 1,
+      "seed": 2026101720,
+      "sandbox": "real",
+      "selection": "pareto"
+    },
+    "limits": "One isolated writer; no new services or paid provision, no network model loading; no Rust source or persistence changes"
+  },
+  "contractSha256": "33f6cefae13da09a5a7d939ff119151938fa0a51841a2abe08d44c9c335bc0c3",
+  "source": "src/agents/cli-command-generator/handler.ts",
+  "baselineSource": "ffd0dbaecfd90658204727da7c17d9c4194231102f1f00a2a3e23d345dd39005",
+  "candidateSource": "c80b892281419c9a28338f9e00ea16a1e910fb790f9fed571c78ffbb6583ac74",
+  "fixtureSha256": "21f66bb4e572742865ca42a84b611bec77d7fe0fbb2eaa65d8f0a96d8201f4dd",
+  "measurements": [
+    {
+      "source": "ffd0dbaecfd90658204727da7c17d9c4194231102f1f00a2a3e23d345dd39005",
+      "suite": "holdout",
+      "score": {
+        "primary": 0,
+        "noopRate": 1,
+        "costPerWin": 0,
+        "regressed": false,
+        "itemWins": [
+          false,
+          false,
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      },
+      "detail": {
+        "http": {
+          "passed": 0,
+          "total": 7,
+          "anchors": 4
+        }
+      },
+      "commands": [
+        {
+          "command": [
+            "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+            "--import",
+            "/workspace/scratch/4f25900b71ff/forge-cycle-oct17d/node_modules/tsx/dist/loader.mjs",
+            "/workspace/scratch/4f25900b71ff/forge-cycle-oct17d/tests/service/verify-cli-input.mjs",
+            "/workspace/scratch/4f25900b71ff/forge-baseline-oct17d"
+          ],
+          "exit": 1
+        }
+      ]
+    },
+    {
+      "source": "ffd0dbaecfd90658204727da7c17d9c4194231102f1f00a2a3e23d345dd39005",
+      "suite": "anchor",
+      "score": {
+        "primary": 1,
+        "noopRate": 0,
+        "costPerWin": 0,
+        "regressed": false,
+        "itemWins": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "detail": {
+        "passed": 1070,
+        "nonPassed": 0,
+        "retainedExistingNames": true,
+        "http": {
+          "passed": 0,
+          "total": 7,
+          "anchors": 4
+        }
+      },
+      "commands": [
+        {
+          "command": [
+            "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+            "--import",
+            "/workspace/scratch/4f25900b71ff/forge-cycle-oct17d/node_modules/tsx/dist/loader.mjs",
+            "/workspace/scratch/4f25900b71ff/forge-cycle-oct17d/tests/service/verify-cli-input.mjs",
+            "/workspace/scratch/4f25900b71ff/forge-baseline-oct17d"
+          ],
+          "exit": 1
+        },
+        {
+          "command": [
+            "npm",
+            "test",
+            "--",
+            "--reporter=json",
+            "--outputFile=/workspace/scratch/4f25900b71ff/forge-baseline-oct17d/.metaharness-unit-result.json"
+          ],
+          "exit": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exit": 0
+        }
+      ]
+    },
+    {
+      "source": "c80b892281419c9a28338f9e00ea16a1e910fb790f9fed571c78ffbb6583ac74",
+      "suite": "holdout",
+      "score": {
+        "primary": 1,
+        "noopRate": 0,
+        "costPerWin": 0,
+        "regressed": false,
+        "itemWins": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "detail": {
+        "http": {
+          "passed": 7,
+          "total": 7,
+          "anchors": 4
+        }
+      },
+      "commands": [
+        {
+          "command": [
+            "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+            "--import",
+            "/workspace/scratch/4f25900b71ff/forge-cycle-oct17d/node_modules/tsx/dist/loader.mjs",
+            "/workspace/scratch/4f25900b71ff/forge-cycle-oct17d/tests/service/verify-cli-input.mjs",
+            "/workspace/scratch/4f25900b71ff/forge-cycle-oct17d"
+          ],
+          "exit": 0
+        }
+      ]
+    },
+    {
+      "source": "c80b892281419c9a28338f9e00ea16a1e910fb790f9fed571c78ffbb6583ac74",
+      "suite": "anchor",
+      "score": {
+        "primary": 1,
+        "noopRate": 0,
+        "costPerWin": 0,
+        "regressed": false,
+        "itemWins": [
+          true,
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      },
+      "detail": {
+        "passed": 1077,
+        "nonPassed": 0,
+        "retainedExistingNames": true,
+        "http": {
+          "passed": 7,
+          "total": 7,
+          "anchors": 4
+        }
+      },
+      "commands": [
+        {
+          "command": [
+            "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+            "--import",
+            "/workspace/scratch/4f25900b71ff/forge-cycle-oct17d/node_modules/tsx/dist/loader.mjs",
+            "/workspace/scratch/4f25900b71ff/forge-cycle-oct17d/tests/service/verify-cli-input.mjs",
+            "/workspace/scratch/4f25900b71ff/forge-cycle-oct17d"
+          ],
+          "exit": 0
+        },
+        {
+          "command": [
+            "npm",
+            "test",
+            "--",
+            "--reporter=json",
+            "--outputFile=/workspace/scratch/4f25900b71ff/forge-cycle-oct17d/.metaharness-unit-result.json"
+          ],
+          "exit": 0
+        },
+        {
+          "command": [
+            "npm",
+            "run",
+            "build"
+          ],
+          "exit": 0
+        }
+      ]
+    }
+  ],
+  "promotions": 1,
+  "fingerprint": "c5942e7c9bf8f28fe7af47a6ec3887d11eeb3f8c8e8601cc6a7a54969ea0b981",
+  "replay": {
+    "pass": true,
+    "checks": {
+      "receipts": true,
+      "reachesRoot": true,
+      "contiguousParents": true,
+      "allPromoted": true,
+      "gateUnchanged": true,
+      "gateReExecutes": true,
+      "allCommitsReceipts": true,
+      "sealedFieldsAuthentic": true
+    },
+    "failures": [],
+    "chainSummary": "gen1(handler) → gen0(root)"
+  },
+  "boundary": "Component request validation only. No live RuVector delivery, IAM, Cloud Run startup, latency, cost or energy claim. Existing default in-memory decision-emitter behavior is unchanged; global lint/type/format/coverage/security and Rust remain independent gates."
+}
