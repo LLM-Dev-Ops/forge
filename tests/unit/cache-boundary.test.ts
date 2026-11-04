@@ -47,7 +47,9 @@ describe('Phase2 cache capacity and category boundaries', () => {
   it('does not reuse lineage data as a historical read', async () => {
     const cache = make();
     cache.set('same', 'wrong-category', 'lineage_lookup');
-    expect(await cache.getOrFetchHistorical('same', () => Promise.resolve('history'))).toBe('history');
+    expect(await cache.getOrFetchHistorical('same', () => Promise.resolve('history'))).toBe(
+      'history'
+    );
   });
   it('does not reuse historical data as a lineage lookup', async () => {
     const cache = make();
