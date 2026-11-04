@@ -1,0 +1,19 @@
+name: Native Cache Boundary
+on:
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native-cache:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 20.19.5
+      - run: npm ci --ignore-scripts
+      - name: Run actual cache boundary contract
+        run: node --import tsx tests/service/probe-cache-boundary.mjs . --assert

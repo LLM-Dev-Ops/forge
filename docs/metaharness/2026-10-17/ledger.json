@@ -1,0 +1,1476 @@
+{
+  "cycle": "Forge CLI validation recovery, 2026-10-17",
+  "utcRecorded": "2026-10-18",
+  "status": {
+    "execution": "EXECUTED",
+    "component": "VALIDATED",
+    "darwin": "NO_IMPROVEMENT",
+    "repository": "BLOCKED",
+    "merged": false
+  },
+  "repository": "LLM-Dev-Ops/forge",
+  "pr": "https://github.com/LLM-Dev-Ops/forge/pull/103",
+  "branch": "metaharness/forge-security-recovery-20261013",
+  "baseline": "733f97caefd62ca750e69ba1b24153363a836e19",
+  "sourceCommit": "db68b9c6904c8566466cd8eeda3842fe4eaa88e9",
+  "main": "4b5e43618b8fd1b8f63bddd24ff524510d9514bc",
+  "coverage": {
+    "installation": 168979216,
+    "pages": [
+      {
+        "offset": 0,
+        "count": 58
+      },
+      {
+        "offset": 100,
+        "count": 0
+      }
+    ],
+    "openPrPages": [
+      100,
+      17
+    ],
+    "nonarchived": 58,
+    "worked": [
+      "forge"
+    ],
+    "metadataInspected": [
+      {
+        "repo": "shield",
+        "main": "1c46282495b94bb1fcae2d9e63cf34f495226699",
+        "ci": [
+          {
+            "id": 38398421866,
+            "sha": "60bcd3c463228ee8c8ccadc4c7c560502d73e273",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "repo": "memory-graph",
+        "main": "d9b9dc5eb7ac313eedc2831dce6af46641bfaaa7",
+        "ci": [
+          {
+            "id": 38985101510,
+            "sha": "a1268650619d3ee7b58d833fa9a7ea727206d66f",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      },
+      {
+        "repo": "observatory",
+        "main": "020f9031a2f1272d55deef0d6c715650b6647150",
+        "ci": [
+          {
+            "id": 38326924256,
+            "sha": "6806b2266882c081ec05dc0ab8350b32c34caf3d",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      },
+      {
+        "repo": "test-bench",
+        "main": "4d58c46426fe085d25fef3fcb35fa5e2cce83b30",
+        "ci": [
+          {
+            "id": 39057164377,
+            "sha": "75797aa19adb133d2bbd8317a6af73fa33a36261",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      },
+      {
+        "repo": "latency-lens",
+        "main": "8370e90fa788959a0b80e3f9c4140422f3eccd69",
+        "ci": [
+          {
+            "id": 22300475883,
+            "sha": "ea8a15eb987f18e59f8d448f0bf48c2ef0891e7e",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      },
+      {
+        "repo": "sentinel",
+        "main": "504b0ea466620ffacfd7ea19993d5a62b71babdd",
+        "ci": [
+          {
+            "id": 38445143556,
+            "sha": "16249d00b5ebaca889ac6ea372c8acc1b867579f",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      },
+      {
+        "repo": "forge",
+        "main": "4b5e43618b8fd1b8f63bddd24ff524510d9514bc",
+        "ci": [
+          {
+            "id": 38994534648,
+            "sha": "4b5e43618b8fd1b8f63bddd24ff524510d9514bc",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      },
+      {
+        "repo": "auto-optimizer",
+        "main": "114865b4c3beb78b9fbeacbfc19ef93ab4501f97",
+        "ci": [
+          {
+            "id": 39032697977,
+            "sha": "e544ac4cb47f1cc9db15c76002c66f00f04f9b53",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      },
+      {
+        "repo": "incident-manager",
+        "main": "bcb8c8d027997c3363a9fd0ebd0ddc9c086227c6",
+        "ci": [
+          {
+            "id": 38052159946,
+            "sha": "834452bad11f38fd70cf73bb9991f83d9d19c299",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "repo": "orchestrator",
+        "main": "24b373c41cbac1d946fda31b7c86a5ff26037375",
+        "ci": [
+          {
+            "id": 30310547202,
+            "sha": "24b373c41cbac1d946fda31b7c86a5ff26037375",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "repo": "edge-agent",
+        "main": "483c8a353855d8d54a1b1dee181f12376b5f592a",
+        "ci": [
+          {
+            "id": 38562684113,
+            "sha": "11da64cb7e409beac9b3c3647767715d6f0b7101",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "repo": "cost-ops",
+        "main": "aef76ae9c264b888abc60aace3dd6948f2422906",
+        "ci": [
+          {
+            "id": 39056490722,
+            "sha": "aef76ae9c264b888abc60aace3dd6948f2422906",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "repo": "governance-dashboard",
+        "main": "53047917da900f397a5045cfc7ddf5e32e735872",
+        "ci": [
+          {
+            "id": 30302815912,
+            "sha": "53047917da900f397a5045cfc7ddf5e32e735872",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      },
+      {
+        "repo": "policy-engine",
+        "main": "c44b699eadc6b8dbbd26fa35d7cf82d61275979b",
+        "ci": []
+      },
+      {
+        "repo": "registry",
+        "main": "322d9c90806a433b0363dffaac92c84ea50af886",
+        "ci": []
+      },
+      {
+        "repo": "config-manager",
+        "main": "02b463c3cbf088183f14b2ec951389f797863ac7",
+        "ci": [
+          {
+            "id": 39034597763,
+            "sha": "2d4649c8defecc32442252672950b1729a2c46a7",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "repo": "marketplace",
+        "main": "70071f0eda8e8bf76574488f74779ed7f1229b47",
+        "ci": [
+          {
+            "id": 30302618197,
+            "sha": "70071f0eda8e8bf76574488f74779ed7f1229b47",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      },
+      {
+        "repo": "analytics-hub",
+        "main": "88f4ffa94afd4a14ec94c9b4b3dc723badc7fac1",
+        "ci": [
+          {
+            "id": 38188081580,
+            "sha": "0021e2d7504db3046128bc2e6144983194f802fa",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      },
+      {
+        "repo": "connector-hub",
+        "main": "b25fcb3bd9a06ae9e7d73c7acd677607123d081d",
+        "ci": [
+          {
+            "id": 30302596307,
+            "sha": "b25fcb3bd9a06ae9e7d73c7acd677607123d081d",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      },
+      {
+        "repo": "schema-registry",
+        "main": "d0d89f267c32a2d31b622ad112836435c2534f39",
+        "ci": [
+          {
+            "id": 30302600641,
+            "sha": "d0d89f267c32a2d31b622ad112836435c2534f39",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      },
+      {
+        "repo": "simulator",
+        "main": "96091398ad2cb1189774d2581fb26c2bebe1abd9",
+        "ci": [
+          {
+            "id": 37978961653,
+            "sha": "8c8d01c419cd0df3006601a83c8846f3ebff40d8",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      },
+      {
+        "repo": "inference-gateway",
+        "main": "a07a604dc14a3eeb2b9a07e85e9c41212156de9a",
+        "ci": [
+          {
+            "id": 38008985239,
+            "sha": "35a949a4671cda298cb81a38a1a8787dbbabb514",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      },
+      {
+        "repo": "benchmark-exchange",
+        "main": "09236748843306e9cc5f33cd91b0c9182c7b18e1",
+        "ci": [
+          {
+            "id": 30302631143,
+            "sha": "09236748843306e9cc5f33cd91b0c9182c7b18e1",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      },
+      {
+        "repo": "research-lab",
+        "main": "83c4850c04d6243c1f700ec4a6a0e406a7d7198a",
+        "ci": [
+          {
+            "id": 38920009861,
+            "sha": "83c4850c04d6243c1f700ec4a6a0e406a7d7198a",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "repo": "data-vault",
+        "main": "01c0240871f03f0cbc0f497bff47360940bcb637",
+        "ci": [
+          {
+            "id": 30302592934,
+            "sha": "01c0240871f03f0cbc0f497bff47360940bcb637",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      },
+      {
+        "repo": "infra",
+        "main": "a8bc89c190f63b139812f30a54e21a25b8f70e81",
+        "ci": []
+      },
+      {
+        "repo": "integrations",
+        "main": "6c9b05037db6445a460e2446c2df7e01acb7b11f",
+        "ci": [
+          {
+            "id": 20294303478,
+            "sha": "6c9b05037db6445a460e2446c2df7e01acb7b11f",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      },
+      {
+        "repo": "ruvector-service",
+        "main": "9f030fd5939c2eb85cd9bd0b9618de84165bddda",
+        "ci": [
+          {
+            "id": 38164317697,
+            "sha": "9f030fd5939c2eb85cd9bd0b9618de84165bddda",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "repo": "intelligence-core",
+        "main": "69aa70372e45279c22942fcee248884e753d8d93",
+        "ci": []
+      },
+      {
+        "repo": "automation-core",
+        "main": "7833fc66f12a4233e73db81dc060e1482a4ea771",
+        "ci": []
+      },
+      {
+        "repo": "security-core",
+        "main": "e37520508c0eab91faf8977b80661dc68ac3826f",
+        "ci": []
+      },
+      {
+        "repo": "governance-core",
+        "main": "a537d4a6cfe5081667415192cfb30b91c37a9e56",
+        "ci": []
+      },
+      {
+        "repo": "data-core",
+        "main": "d8a4d82b3918f2cf8aaf5fe003b5c351f184a9a9",
+        "ci": [
+          {
+            "id": 38734205492,
+            "sha": "d8a4d82b3918f2cf8aaf5fe003b5c351f184a9a9",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "repo": "ecosystem-core",
+        "main": "af3c7e8999c7b8d8891995994a0bd0958c445099",
+        "ci": []
+      },
+      {
+        "repo": "copilot-agent",
+        "main": "756402a87e39419efa90a2accfe34b46083af945",
+        "ci": [
+          {
+            "id": 30302673145,
+            "sha": "756402a87e39419efa90a2accfe34b46083af945",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      },
+      {
+        "repo": "interface-core",
+        "main": "d4185560cf74b52fd44e515238cebeec88241371",
+        "ci": []
+      },
+      {
+        "repo": "agentics-platform",
+        "main": "9b3fa8d3faeda67230e953355eee1ab87112fcaf",
+        "ci": [
+          {
+            "id": 30359780578,
+            "sha": "9b3fa8d3faeda67230e953355eee1ab87112fcaf",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      },
+      {
+        "repo": "research-core",
+        "main": "5c86396ac8cf14a17517134ac811c6ea9fc347b7",
+        "ci": [
+          {
+            "id": 38659306826,
+            "sha": "5c86396ac8cf14a17517134ac811c6ea9fc347b7",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "repo": "agentics-deployment-intent",
+        "main": "95111d9f55c7aba9c392b2eab08540b3a67e1d51",
+        "ci": []
+      },
+      {
+        "repo": "agentics-simulation-planner",
+        "main": "144a6c41b8532cfc0ae8bffe7e2f1676cb5068fe",
+        "ci": []
+      },
+      {
+        "repo": "agentics-simulation-runner",
+        "main": "ead6a0f0b2f0af389c1cae6dc7b001ecfe7a90f8",
+        "ci": []
+      },
+      {
+        "repo": "agentics-cli",
+        "main": "a6fa67a40fe3d08d51ff2c66d0f96e43a89ff9a6",
+        "ci": [
+          {
+            "id": 28767269473,
+            "sha": "a6fa67a40fe3d08d51ff2c66d0f96e43a89ff9a6",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "repo": "agentics-org-manifests",
+        "main": "a52b61eea0e6b60883e436c982abc55bb9030edd",
+        "ci": []
+      },
+      {
+        "repo": "agentics-diligence-artifacts",
+        "main": "131b0aaa8d316655d7d860bc9ffa38fea4767447",
+        "ci": []
+      },
+      {
+        "repo": "erp-surface",
+        "main": "188099d51ff1f1d4af944401d5fef18666317643",
+        "ci": [
+          {
+            "id": 22001663894,
+            "sha": "188099d51ff1f1d4af944401d5fef18666317643",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      },
+      {
+        "repo": "agentics-deployment-exporters",
+        "main": "ea60a265f6fb9a89e0b2012ed7d0441cb6637168",
+        "ci": []
+      },
+      {
+        "repo": "enterprise-roi-engine",
+        "main": "1f4d33cc057740f9f96e75e6c11b0dfd44cd35e7",
+        "ci": []
+      },
+      {
+        "repo": "agentics-contracts",
+        "main": "716a33348721f78a7a14bd98e6717e3b40470730",
+        "ci": []
+      },
+      {
+        "repo": "agentics-results-index",
+        "main": "876cd8cf38eb9e5687c92b73e8d3b8ac7e34e57c",
+        "ci": []
+      },
+      {
+        "repo": "agentics-usage-ledger",
+        "main": "dbd63a6ae35a45f889170fc2ca3e611907506c45",
+        "ci": []
+      },
+      {
+        "repo": "agentics-orchestration-engine",
+        "main": "a365c1a6f954041aefef67678fc3fe1b0b4eba7d",
+        "ci": []
+      },
+      {
+        "repo": "platform-agents",
+        "main": "94fbbc82db9cc10f66093df428560ef01aa2b322",
+        "ci": []
+      },
+      {
+        "repo": "agentics-cli-test",
+        "main": "fb73fe95db97bd35cfe378291004f09f2929675d",
+        "ci": []
+      },
+      {
+        "repo": "agentics-enforcement",
+        "main": "45277702166465be82fe2fa255aaa0dec0893994",
+        "ci": []
+      },
+      {
+        "repo": "agentics-execution-engine",
+        "main": "accaf090c78cb0dfe439c771b2ecba868cdfbeac",
+        "ci": []
+      },
+      {
+        "repo": "agentics-evolution",
+        "main": "855c0b2e9a53ade5ab2f06d4185b7c3c8fff0369",
+        "ci": [
+          {
+            "id": 31585157853,
+            "sha": "e1d5f3236b4c938e1febb9cdd8ab0c2d4b1655d0",
+            "status": "completed",
+            "conclusion": "success"
+          }
+        ]
+      },
+      {
+        "repo": "RuVector",
+        "main": "9e12078ae2af74d0613ae604266cf22fb1113b10",
+        "ci": []
+      },
+      {
+        "repo": "agentics-dream-machine",
+        "main": "2fba2550182d81b36423447221823e98e227482a",
+        "ci": [
+          {
+            "id": 39021093764,
+            "sha": "26c1bbdb3f8792a04acdb8c310a1d36eb0635621",
+            "status": "completed",
+            "conclusion": "failure"
+          }
+        ]
+      }
+    ],
+    "additionalPrInspected": [
+      "sentinel#22"
+    ],
+    "deferred": [
+      {
+        "repository": "LLM-Dev-Ops/shield",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/test-bench",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/observatory",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/sentinel",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/memory-graph",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/latency-lens",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/edge-agent",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/auto-optimizer",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/incident-manager",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/orchestrator",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/cost-ops",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/governance-dashboard",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/policy-engine",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/registry",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/marketplace",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/analytics-hub",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/config-manager",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/schema-registry",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/connector-hub",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/copilot-agent",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/simulator",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/benchmark-exchange",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/inference-gateway",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/data-vault",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/research-lab",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/infra",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/integrations",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/ruvector-service",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/intelligence-core",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/security-core",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/automation-core",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/governance-core",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/data-core",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/ecosystem-core",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/research-core",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/interface-core",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/agentics-platform",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/agentics-diligence-artifacts",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/agentics-deployment-intent",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/agentics-simulation-planner",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/agentics-simulation-runner",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/agentics-deployment-exporters",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/agentics-org-manifests",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/agentics-cli",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/erp-surface",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/agentics-orchestration-engine",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/enterprise-roi-engine",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/agentics-contracts",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/agentics-results-index",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/agentics-usage-ledger",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/agentics-execution-engine",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/agentics-enforcement",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/platform-agents",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/agentics-cli-test",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/agentics-evolution",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/RuVector",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      },
+      {
+        "repository": "LLM-Dev-Ops/agentics-dream-machine",
+        "reason": "Fair bounded rotation: metadata/main/latestCI inspected; no implementation or validation claimed this cycle. Recent deep work memory-graph, auto-optimizer, config-manager, test-bench deliberately deferred."
+      }
+    ]
+  },
+  "coordination": {
+    "swarm": "swarm-1792281574110-6kd88m",
+    "task": "task-mvd269ml",
+    "maxAgents": 1,
+    "delegatedWorkers": 0,
+    "writer": "Single coordinator isolated local worktrees; no existing user worktree modified. GitHub updates use expected head and force=false; no overlap observed.",
+    "shellGitWrites": "Not attempted. Connected Git-object API and leased ref update verified."
+  },
+  "instructions": {
+    "AGENTS": "No AGENTS.md found",
+    "CLAUDE": "Read entire repository CLAUDE.md; respected file organization. Pinned Ruflo rather than unpinned latest; no subagents under active runtime policy.",
+    "coreMemory": "task_start and check_risk returned unscreened:true, no guidance/warnings; no inferred preferences.",
+    "mapping": [
+      "Stateless TypeScript handler only, Rust sources/manifests unchanged.",
+      "No service-owned DB, schema, IAM, deployment or RuVector persistence changes.",
+      "Remote model loading disabled, fail-closed seccomp launcher, checksum-pinned local real MiniLM embeddings.",
+      "No test/config/coverage/scoring gate weakening. Test utilities live under existing tests directory, already excluded by repository policy."
+    ]
+  },
+  "tools": {
+    "Ruflo": "3.56.3",
+    "Transformers": "4.3.1",
+    "MetaHarness": "0.4.17",
+    "Darwin": "0.10.3",
+    "Flywheel": "0.1.12",
+    "modelRevision": "751bff37182d3f1213fa05d7196b954e230abad9",
+    "upstreamDocsRevision": "e0dfd44da72b7adfb7c57fdd42d124be58ed7086",
+    "localNode": "24.19.0",
+    "localNpm": "11.9.0",
+    "RuOSNode": "20.20.2 (reverify exact final run)",
+    "RuOSRust": "1.99.0",
+    "OpenSSL": "3.0.13",
+    "hashes": {
+      "lock": "31abd58e0ed6d268a70ea6695d12ef9f6ce135000a8de4ce879ddbcc3c343df3",
+      "contract": "33f6cefae13da09a5a7d939ff119151938fa0a51841a2abe08d44c9c335bc0c3",
+      "preload": "636a3717b69ef9c55b104e37fd0443adcee0e98aca712c51458ed66904cc2c80",
+      "offline": "e4abfedba54133eeedae7fddb1bc35308a0e93df194453ab424cd96c2dd7ee89"
+    }
+  },
+  "commands": [
+    {
+      "command": "RUFLO_DAEMON_AUTOSTART=0 node ../cycle-tools-20261017/node_modules/ruflo/bin/ruflo.js swarm init --topology hierarchical --max-agents 1 --strategy specialized",
+      "exit": 0
+    },
+    {
+      "command": "RUFLO_DAEMON_AUTOSTART=0 node ../cycle-tools-20261017/node_modules/ruflo/bin/ruflo.js hooks pre-task --description 'forge-oct17d repair strict typed validation without weakening gates'",
+      "exit": 0
+    },
+    {
+      "command": "node ../cycle-tools-20261017/node_modules/metaharness/dist/bin.js score . --json",
+      "exit": 0,
+      "baseline": 82,
+      "candidate": 82,
+      "hardConstraints": "6/6",
+      "warning": "Static estimate, not compiler evidence"
+    },
+    {
+      "command": "node ../cycle-tools-20261017/node_modules/@metaharness/darwin/dist/cli.js evolve . --generations 1 --children 2 --concurrency 1 --seed 2026101720 --sandbox real --selection pareto",
+      "exit": 0,
+      "variants": [
+        {
+          "variant": "baseline",
+          "score": {
+            "variantId": "baseline",
+            "taskSuccess": 1,
+            "testPassRate": 1,
+            "traceQuality": 0.9,
+            "costEfficiency": 1,
+            "latencyEfficiency": 1,
+            "safetyScore": 1,
+            "secretExposure": 0,
+            "destructiveAction": 0,
+            "hallucinatedFile": 0,
+            "toolLoop": 0,
+            "costOverrun": 0,
+            "baseScore": 0.985,
+            "finalScore": 0.985,
+            "promoted": true,
+            "reason": "promoted: finalScore 0.9850 > parent 0.0000 + delta 0.05 (safety 1.00, no test regression)"
+          },
+          "traces": [
+            {
+              "exit": 0,
+              "durationMs": 2945,
+              "timedOut": false,
+              "blockedActions": []
+            },
+            {
+              "exit": 0,
+              "durationMs": 2685,
+              "timedOut": false,
+              "blockedActions": []
+            },
+            {
+              "exit": 0,
+              "durationMs": 2623,
+              "timedOut": false,
+              "blockedActions": []
+            }
+          ]
+        },
+        {
+          "variant": "g1_v0",
+          "score": {
+            "variantId": "g1_v0",
+            "taskSuccess": 1,
+            "testPassRate": 1,
+            "traceQuality": 0.9,
+            "costEfficiency": 1,
+            "latencyEfficiency": 1,
+            "safetyScore": 1,
+            "secretExposure": 0,
+            "destructiveAction": 0,
+            "hallucinatedFile": 0,
+            "toolLoop": 0,
+            "costOverrun": 0,
+            "baseScore": 0.985,
+            "finalScore": 0.985,
+            "promoted": false,
+            "reason": "not promoted: finalScore 0.9850 ≤ parent 0.9850 + delta 0.05"
+          },
+          "traces": [
+            {
+              "exit": 0,
+              "durationMs": 2776,
+              "timedOut": false,
+              "blockedActions": []
+            },
+            {
+              "exit": 0,
+              "durationMs": 3294,
+              "timedOut": false,
+              "blockedActions": []
+            },
+            {
+              "exit": 0,
+              "durationMs": 3117,
+              "timedOut": false,
+              "blockedActions": []
+            }
+          ]
+        },
+        {
+          "variant": "g1_v1",
+          "score": {
+            "variantId": "g1_v1",
+            "taskSuccess": 1,
+            "testPassRate": 1,
+            "traceQuality": 0.9,
+            "costEfficiency": 1,
+            "latencyEfficiency": 1,
+            "safetyScore": 1,
+            "secretExposure": 0,
+            "destructiveAction": 0,
+            "hallucinatedFile": 0,
+            "toolLoop": 0,
+            "costOverrun": 0,
+            "baseScore": 0.985,
+            "finalScore": 0.985,
+            "promoted": false,
+            "reason": "not promoted: finalScore 0.9850 ≤ parent 0.9850 + delta 0.05"
+          },
+          "traces": [
+            {
+              "exit": 0,
+              "durationMs": 3099,
+              "timedOut": false,
+              "blockedActions": []
+            },
+            {
+              "exit": 0,
+              "durationMs": 3019,
+              "timedOut": false,
+              "blockedActions": []
+            },
+            {
+              "exit": 0,
+              "durationMs": 2845,
+              "timedOut": false,
+              "blockedActions": []
+            }
+          ]
+        }
+      ],
+      "conclusion": "Both tied baseline0.985 and rejected. Nine real npm test runs completed exit0; no harness mutation accepted. Root promoted flag is archive initialization, not an improvement."
+    },
+    {
+      "command": "node tests/evaluate-cli-input.mjs ../forge-baseline-oct17d . ../cycle-tools-20261017 docs/metaharness/2026-10-17/flywheel-results.json",
+      "exit": 0,
+      "conclusion": "Component only. Seven nativeHTTP holdouts0/7→7/7; six anchors retained. All1070 existing test assertion names retained;1077candidate pass. Signed replay8/8."
+    },
+    {
+      "command": "RUFLO_DAEMON_AUTOSTART=0 RUFLO_MODEL_DIR=/workspace/scratch/4f25900b71ff/ruflo-models python3 /workspace/scratch/4f25900b71ff/research-lab-blockers/scripts/offline-exec.py node --import /workspace/scratch/4f25900b71ff/research-lab-blockers/scripts/ruflo-local-model.mjs /workspace/scratch/4f25900b71ff/cycle-tools-20261017/node_modules/ruflo/bin/ruflo.js hooks post-task --task-id task-mvd269ml --success false --quality 0.8 --agent codex --agent-role coordinator --task 'Forge CLI invalid JSON HTTP500 repaired to400 seven cases, original1070tests retained, global lint types coverage Rust gates blocked; no merge' --store-results --format json",
+      "exit": 0,
+      "realEmbeddingDimensions": 384,
+      "learningUpdates": {
+        "available": true,
+        "outcomePersisted": true,
+        "patternsUpdated": 2
+      },
+      "feedback": {
+        "recorded": true,
+        "updates": 2
+      },
+      "trajectory": {
+        "recorded": true
+      },
+      "remoteModelLoading": false
+    },
+    {
+      "command": "bash /home/ruv/work/research-lab-runtime-recovery-20261016/scripts/bootstrap-ruos.sh",
+      "exit": 0,
+      "recoveryHead": "6454d374a939f2b5f94709b6909f4251b7204252",
+      "recoveryMain": "83c4850c04d6243c1f700ec4a6a0e406a7d7198a"
+    },
+    {
+      "command": "pkg-config --modversion openssl",
+      "exit": 0,
+      "stdout": "3.0.13"
+    },
+    {
+      "command": "cargo test --manifest-path forge-benchmarks/Cargo.toml --locked",
+      "exit": 101,
+      "conclusion": "Real cargo invocation failed manifest parsing: bench forge_benchmarks missing benches/forge_benchmarks.rs; no Rust tests executed. Rust build/Clippy deferred, not claimed passing."
+    },
+    {
+      "command": "npm ci --ignore-scripts",
+      "exit": 0,
+      "installed": 477
+    },
+    {
+      "command": "npm test -- --reporter=json --outputFile=REPORT",
+      "exit": 0,
+      "baselinePassed": 1070,
+      "candidatePassed": 1077,
+      "skipped": 0
+    },
+    {
+      "command": "npm run build",
+      "exit": 0,
+      "baselineExit": 0
+    },
+    {
+      "command": "npm run type-check",
+      "exit": 2,
+      "baselineDiagnostics": 131,
+      "candidateDiagnostics": 129,
+      "handlerDiagnostics": 0
+    },
+    {
+      "command": "npm run lint",
+      "exit": 1,
+      "baselineErrors": 1421,
+      "candidateErrors": 1421,
+      "baselineWarnings": 249,
+      "candidateWarnings": 248
+    },
+    {
+      "command": "npm run format:check",
+      "exit": 1,
+      "baselineFiles": 75,
+      "candidateFiles": 74
+    },
+    {
+      "command": "npm run test:coverage",
+      "exit": 1,
+      "baseline": {
+        "lines": 70.11,
+        "statements": 70.11,
+        "functions": 86.4,
+        "branches": 80.08
+      },
+      "candidate": {
+        "lines": 70.14,
+        "statements": 70.14,
+        "functions": 86.42,
+        "branches": 80.16
+      },
+      "thresholds": {
+        "lines": 90,
+        "statements": 90,
+        "functions": 85,
+        "branches": 75
+      },
+      "unchanged": true
+    },
+    {
+      "command": "npm audit --omit=dev --json",
+      "exit": 0,
+      "findings": 0
+    },
+    {
+      "command": "npm audit --json",
+      "exit": 1,
+      "findings": {
+        "info": 0,
+        "low": 0,
+        "moderate": 4,
+        "high": 18,
+        "critical": 4,
+        "total": 26
+      }
+    },
+    {
+      "command": "git diff --cached --binary | git apply --check --reverse",
+      "exit": 0,
+      "conclusion": "Rollback applicability checked; receipt retains exact parent handler bytes and SHA. No production rollback performed."
+    }
+  ],
+  "flywheel": {
+    "contract": {
+      "baseline": "733f97caefd62ca750e69ba1b24153363a836e19",
+      "scope": "CLI generator invalid JSON value classification; no external persistence or deployment claims",
+      "holdout": [
+        "null",
+        "array",
+        "string",
+        "number",
+        "missing fields",
+        "invalid framework",
+        "untrusted coercion property"
+      ],
+      "acceptance": "Each holdout returns HTTP400 with schema validation errors, not HTTP500 or a TypeError; no coercion of unvalidated JSON metadata",
+      "anchor": [
+        "malformed JSON remains400",
+        "unsupported method remains405",
+        "health remains200",
+        "contract remains200",
+        "all1070existing tests remain passing",
+        "build remains passing"
+      ],
+      "wholeRepositoryMerge": "All existing type, lint, format, coverage, security and required CI gates must pass; no threshold, test, exclusion or policy weakening",
+      "darwin": {
+        "generations": 1,
+        "children": 2,
+        "concurrency": 1,
+        "seed": 2026101720,
+        "sandbox": "real",
+        "selection": "pareto"
+      },
+      "limits": "One isolated writer; no new services or paid provision, no network model loading; no Rust source or persistence changes"
+    },
+    "contractSha256": "33f6cefae13da09a5a7d939ff119151938fa0a51841a2abe08d44c9c335bc0c3",
+    "source": "src/agents/cli-command-generator/handler.ts",
+    "baselineSource": "ffd0dbaecfd90658204727da7c17d9c4194231102f1f00a2a3e23d345dd39005",
+    "candidateSource": "c80b892281419c9a28338f9e00ea16a1e910fb790f9fed571c78ffbb6583ac74",
+    "fixtureSha256": "21f66bb4e572742865ca42a84b611bec77d7fe0fbb2eaa65d8f0a96d8201f4dd",
+    "measurements": [
+      {
+        "source": "ffd0dbaecfd90658204727da7c17d9c4194231102f1f00a2a3e23d345dd39005",
+        "suite": "holdout",
+        "score": {
+          "primary": 0,
+          "noopRate": 1,
+          "costPerWin": 0,
+          "regressed": false,
+          "itemWins": [
+            false,
+            false,
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "detail": {
+          "http": {
+            "passed": 0,
+            "total": 7,
+            "anchors": 4
+          }
+        },
+        "commands": [
+          {
+            "command": [
+              "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+              "--import",
+              "/workspace/scratch/4f25900b71ff/forge-cycle-oct17d/node_modules/tsx/dist/loader.mjs",
+              "/workspace/scratch/4f25900b71ff/forge-cycle-oct17d/tests/service/verify-cli-input.mjs",
+              "/workspace/scratch/4f25900b71ff/forge-baseline-oct17d"
+            ],
+            "exit": 1
+          }
+        ]
+      },
+      {
+        "source": "ffd0dbaecfd90658204727da7c17d9c4194231102f1f00a2a3e23d345dd39005",
+        "suite": "anchor",
+        "score": {
+          "primary": 1,
+          "noopRate": 0,
+          "costPerWin": 0,
+          "regressed": false,
+          "itemWins": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "detail": {
+          "passed": 1070,
+          "nonPassed": 0,
+          "retainedExistingNames": true,
+          "http": {
+            "passed": 0,
+            "total": 7,
+            "anchors": 4
+          }
+        },
+        "commands": [
+          {
+            "command": [
+              "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+              "--import",
+              "/workspace/scratch/4f25900b71ff/forge-cycle-oct17d/node_modules/tsx/dist/loader.mjs",
+              "/workspace/scratch/4f25900b71ff/forge-cycle-oct17d/tests/service/verify-cli-input.mjs",
+              "/workspace/scratch/4f25900b71ff/forge-baseline-oct17d"
+            ],
+            "exit": 1
+          },
+          {
+            "command": [
+              "npm",
+              "test",
+              "--",
+              "--reporter=json",
+              "--outputFile=/workspace/scratch/4f25900b71ff/forge-baseline-oct17d/.metaharness-unit-result.json"
+            ],
+            "exit": 0
+          },
+          {
+            "command": [
+              "npm",
+              "run",
+              "build"
+            ],
+            "exit": 0
+          }
+        ]
+      },
+      {
+        "source": "c80b892281419c9a28338f9e00ea16a1e910fb790f9fed571c78ffbb6583ac74",
+        "suite": "holdout",
+        "score": {
+          "primary": 1,
+          "noopRate": 0,
+          "costPerWin": 0,
+          "regressed": false,
+          "itemWins": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "detail": {
+          "http": {
+            "passed": 7,
+            "total": 7,
+            "anchors": 4
+          }
+        },
+        "commands": [
+          {
+            "command": [
+              "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+              "--import",
+              "/workspace/scratch/4f25900b71ff/forge-cycle-oct17d/node_modules/tsx/dist/loader.mjs",
+              "/workspace/scratch/4f25900b71ff/forge-cycle-oct17d/tests/service/verify-cli-input.mjs",
+              "/workspace/scratch/4f25900b71ff/forge-cycle-oct17d"
+            ],
+            "exit": 0
+          }
+        ]
+      },
+      {
+        "source": "c80b892281419c9a28338f9e00ea16a1e910fb790f9fed571c78ffbb6583ac74",
+        "suite": "anchor",
+        "score": {
+          "primary": 1,
+          "noopRate": 0,
+          "costPerWin": 0,
+          "regressed": false,
+          "itemWins": [
+            true,
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        },
+        "detail": {
+          "passed": 1077,
+          "nonPassed": 0,
+          "retainedExistingNames": true,
+          "http": {
+            "passed": 7,
+            "total": 7,
+            "anchors": 4
+          }
+        },
+        "commands": [
+          {
+            "command": [
+              "/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node",
+              "--import",
+              "/workspace/scratch/4f25900b71ff/forge-cycle-oct17d/node_modules/tsx/dist/loader.mjs",
+              "/workspace/scratch/4f25900b71ff/forge-cycle-oct17d/tests/service/verify-cli-input.mjs",
+              "/workspace/scratch/4f25900b71ff/forge-cycle-oct17d"
+            ],
+            "exit": 0
+          },
+          {
+            "command": [
+              "npm",
+              "test",
+              "--",
+              "--reporter=json",
+              "--outputFile=/workspace/scratch/4f25900b71ff/forge-cycle-oct17d/.metaharness-unit-result.json"
+            ],
+            "exit": 0
+          },
+          {
+            "command": [
+              "npm",
+              "run",
+              "build"
+            ],
+            "exit": 0
+          }
+        ]
+      }
+    ],
+    "promotions": 1,
+    "fingerprint": "c5942e7c9bf8f28fe7af47a6ec3887d11eeb3f8c8e8601cc6a7a54969ea0b981",
+    "replay": {
+      "pass": true,
+      "checks": {
+        "receipts": true,
+        "reachesRoot": true,
+        "contiguousParents": true,
+        "allPromoted": true,
+        "gateUnchanged": true,
+        "gateReExecutes": true,
+        "allCommitsReceipts": true,
+        "sealedFieldsAuthentic": true
+      },
+      "failures": [],
+      "chainSummary": "gen1(handler) → gen0(root)"
+    },
+    "boundary": "Component request validation only. No live RuVector delivery, IAM, Cloud Run startup, latency, cost or energy claim. Existing default in-memory decision-emitter behavior is unchanged; global lint/type/format/coverage/security and Rust remain independent gates."
+  },
+  "sourceCi": [
+    {
+      "id": 39081386414,
+      "url": "https://github.com/LLM-Dev-Ops/forge/actions/runs/39081386414",
+      "name": "Dependabot Auto-Merge",
+      "status": "completed",
+      "conclusion": "skipped",
+      "sha": "db68b9c6904c8566466cd8eeda3842fe4eaa88e9"
+    },
+    {
+      "id": 39081386440,
+      "url": "https://github.com/LLM-Dev-Ops/forge/actions/runs/39081386440",
+      "name": "Pull Request Validation",
+      "status": "completed",
+      "conclusion": "failure",
+      "sha": "db68b9c6904c8566466cd8eeda3842fe4eaa88e9"
+    },
+    {
+      "id": 39081386422,
+      "url": "https://github.com/LLM-Dev-Ops/forge/actions/runs/39081386422",
+      "name": "Performance Monitoring",
+      "status": "completed",
+      "conclusion": "failure",
+      "sha": "db68b9c6904c8566466cd8eeda3842fe4eaa88e9"
+    },
+    {
+      "id": 39081386428,
+      "url": "https://github.com/LLM-Dev-Ops/forge/actions/runs/39081386428",
+      "name": "Security Scanning",
+      "status": "completed",
+      "conclusion": "failure",
+      "sha": "db68b9c6904c8566466cd8eeda3842fe4eaa88e9"
+    }
+  ],
+  "sourceValidationJobs": [
+    {
+      "id": 117538847983,
+      "name": "Check if validation should be skipped",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 117538869736,
+      "name": "Install Dependencies",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 117538911497,
+      "name": "Run Tests (21)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 117538911531,
+      "name": "TypeScript Type Check",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 117538911540,
+      "name": "Check Code Format",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 117538911543,
+      "name": "Build Package",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 117538911546,
+      "name": "Lint Code",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 117538911599,
+      "name": "Run Tests (20)",
+      "status": "completed",
+      "conclusion": "success"
+    },
+    {
+      "id": 117538911610,
+      "name": "Test Coverage",
+      "status": "completed",
+      "conclusion": "failure"
+    },
+    {
+      "id": 117538995524,
+      "name": "Quality Gate",
+      "status": "completed",
+      "conclusion": "failure"
+    }
+  ],
+  "conflicts": {
+    "mainChanged": false,
+    "mergeable": true,
+    "resolutions": [],
+    "instruction": "Revalidate final published commit and refresh main/head before merge. No merge while any gate is red."
+  },
+  "rejectedAttempts": [
+    "Two Darwin variants scorePolicy/retryPolicy tied0.985; not promoted.",
+    "Initial baseline build raced dependency installation and exited127 tsup not found; ignored as setup failure and rerun after npmci exit0.",
+    "Exploratory coverage contaminated by generated Darwin files and script placement: discarded as controlled comparison. Clean worktree then tests-directory utilities yielded70.11→70.14 with unchanged existing coverage config.",
+    "New separate TS test introduced one existing ESLint parser-scope-style error; consolidated cases into existing test file and reran:1421errors unchanged.",
+    "Evaluator fixture relocation initially used wrong relative contract path ENOENT, exited1 before evaluation; corrected path, reran full real evaluation.",
+    "Full npm audit JSON read before process completion was rejected; only complete exit1 report26findings used."
+  ],
+  "remaining": [
+    "129 TypeScript diagnostics across repository",
+    "1421 ESLint errors including missing TypeScript import resolver/test project scope",
+    "74 files with pre-existing formatting drift",
+    "Coverage lines/statements below unchanged90%",
+    "26 full dependency audit advisories including4critical18high",
+    "Rust benchmark manifest path invalid, optional package paths may need later diagnosis after manifest fix; no guessed fixes applied",
+    "Security/performance hosted workflow gates must pass before merge",
+    "No deploy/package publish/protection bypass performed"
+  ],
+  "rollback": "Revert this cycle's source and evidence commits (or apply signed parent handler bytes); prior dependency recovery commit733f97 remains. To revert whole PR after any future merge, revert merge commit. No persistence/schema migration.",
+  "exactFinal": "Final commit SHA and latest CI results are recorded on PR103 after publish; this evidence does not claim future CI results."
+}

@@ -1,0 +1,360 @@
+{
+  "schema": 1,
+  "tool": "@metaharness/flywheel@0.1.12",
+  "baseline": "4b5e43618b8fd1b8f63bddd24ff524510d9514bc",
+  "candidate": "working-tree",
+  "holdout": "forge-holdout-v1",
+  "anchor": "forge-anchor-v1",
+  "gateFingerprint": "c5942e7c9bf8f28fe7af47a6ec3887d11eeb3f8c8e8601cc6a7a54969ea0b981",
+  "liftCurve": [
+    {
+      "generation": 0,
+      "primary": 0,
+      "delta": 0,
+      "anchor": 1
+    },
+    {
+      "generation": 1,
+      "primary": 1,
+      "delta": 1,
+      "anchor": 1
+    }
+  ],
+  "promotions": [
+    {
+      "id": "root__repo_gen1",
+      "generation": 1,
+      "parents": [
+        "root"
+      ],
+      "mutation": {
+        "target": "repo",
+        "summary": "Remove unused vulnerable runtime dependencies, restore the ESM contract test, and repair pinned security automation.",
+        "inverse": {
+          "path": "forge candidate",
+          "parentBytes": "4b5e43618b8fd1b8f63bddd24ff524510d9514bc",
+          "hash": "90f0810994de093b99c75f76d4494fef739df95beb115ef94b4e989fca952878"
+        }
+      },
+      "primaryDelta": 1,
+      "anchorScore": 1,
+      "verdict": "PROMOTED",
+      "failureReasons": [],
+      "receipt": {
+        "payload": {
+          "kind": "candidate",
+          "id": "root__repo_gen1",
+          "target": "repo",
+          "verdict": "PROMOTED",
+          "primaryDelta": 1,
+          "baselineScore": {
+            "primary": 0,
+            "noopRate": 1,
+            "costPerWin": 6,
+            "regressed": false,
+            "itemWins": [
+              false,
+              false,
+              false,
+              false,
+              false
+            ]
+          },
+          "candidateScore": {
+            "primary": 1,
+            "noopRate": 0,
+            "costPerWin": 1,
+            "regressed": false,
+            "itemWins": [
+              true,
+              true,
+              true,
+              true,
+              true
+            ]
+          },
+          "anchorScore": 1,
+          "failureReasons": [],
+          "parents": [
+            "root"
+          ],
+          "generation": 1
+        },
+        "signature": "ADzJ+Awh3WRbj3D8rNz9rQucpqw9k6Bo3BYpmJu2XtEw5ZqmN8XEQtIb8tbavmLqggSLjq/HIwM8EJCA+6I4AA==",
+        "publicKey": "MCowBQYDK2VwAyEA0HHXaE7pMuw+wWhG3IPzUY+UjuI1Rxodsl1ZfkfekTY=",
+        "alg": "ed25519"
+      },
+      "createdAt": "2026-10-14T00:24:00.000Z",
+      "baselineScore": {
+        "primary": 0,
+        "noopRate": 1,
+        "costPerWin": 6,
+        "regressed": false,
+        "itemWins": [
+          false,
+          false,
+          false,
+          false,
+          false
+        ]
+      },
+      "candidateScore": {
+        "primary": 1,
+        "noopRate": 0,
+        "costPerWin": 1,
+        "regressed": false,
+        "itemWins": [
+          true,
+          true,
+          true,
+          true,
+          true
+        ]
+      }
+    }
+  ],
+  "replay": {
+    "pass": true,
+    "checks": {
+      "receipts": true,
+      "reachesRoot": true,
+      "contiguousParents": true,
+      "allPromoted": true,
+      "gateUnchanged": true,
+      "gateReExecutes": true,
+      "allCommitsReceipts": true,
+      "sealedFieldsAuthentic": true
+    },
+    "failures": [],
+    "chainSummary": "gen1(repo) → gen0(root)"
+  },
+  "replayBundle": {
+    "data_source": "LIVE",
+    "root_id": "root",
+    "chain": [
+      {
+        "id": "root__repo_gen1",
+        "generation": 1,
+        "parents": [
+          "root"
+        ],
+        "mutation": {
+          "target": "repo",
+          "summary": "Remove unused vulnerable runtime dependencies, restore the ESM contract test, and repair pinned security automation.",
+          "inverse": {
+            "path": "forge candidate",
+            "parentBytes": "4b5e43618b8fd1b8f63bddd24ff524510d9514bc",
+            "hash": "90f0810994de093b99c75f76d4494fef739df95beb115ef94b4e989fca952878"
+          }
+        },
+        "primaryDelta": 1,
+        "anchorScore": 1,
+        "verdict": "PROMOTED",
+        "failureReasons": [],
+        "receipt": {
+          "payload": {
+            "kind": "candidate",
+            "id": "root__repo_gen1",
+            "target": "repo",
+            "verdict": "PROMOTED",
+            "primaryDelta": 1,
+            "baselineScore": {
+              "primary": 0,
+              "noopRate": 1,
+              "costPerWin": 6,
+              "regressed": false,
+              "itemWins": [
+                false,
+                false,
+                false,
+                false,
+                false
+              ]
+            },
+            "candidateScore": {
+              "primary": 1,
+              "noopRate": 0,
+              "costPerWin": 1,
+              "regressed": false,
+              "itemWins": [
+                true,
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            "anchorScore": 1,
+            "failureReasons": [],
+            "parents": [
+              "root"
+            ],
+            "generation": 1
+          },
+          "signature": "ADzJ+Awh3WRbj3D8rNz9rQucpqw9k6Bo3BYpmJu2XtEw5ZqmN8XEQtIb8tbavmLqggSLjq/HIwM8EJCA+6I4AA==",
+          "publicKey": "MCowBQYDK2VwAyEA0HHXaE7pMuw+wWhG3IPzUY+UjuI1Rxodsl1ZfkfekTY=",
+          "alg": "ed25519"
+        },
+        "createdAt": "2026-10-14T00:24:00.000Z",
+        "baselineScore": {
+          "primary": 0,
+          "noopRate": 1,
+          "costPerWin": 6,
+          "regressed": false,
+          "itemWins": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "candidateScore": {
+          "primary": 1,
+          "noopRate": 0,
+          "costPerWin": 1,
+          "regressed": false,
+          "itemWins": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        }
+      },
+      {
+        "id": "root",
+        "generation": 0,
+        "parents": [],
+        "mutation": null,
+        "primaryDelta": 0,
+        "anchorScore": 1,
+        "verdict": "ROOT",
+        "failureReasons": [],
+        "receipt": {
+          "payload": {
+            "kind": "root",
+            "root": "root"
+          },
+          "signature": "mqe9xFrwwrp6H4bl4h7Pc7Kpj15tgdhJD5bcnPzUJHGlGeRYCccDKiP2FDhq+N0kujie8LlLRdvDVpAvjVciBw==",
+          "publicKey": "MCowBQYDK2VwAyEA0HHXaE7pMuw+wWhG3IPzUY+UjuI1Rxodsl1ZfkfekTY=",
+          "alg": "ed25519"
+        },
+        "createdAt": "2026-10-14T00:24:00.000Z"
+      }
+    ],
+    "all_commits": [
+      {
+        "id": "root__repo_gen1",
+        "generation": 1,
+        "parents": [
+          "root"
+        ],
+        "mutation": {
+          "target": "repo",
+          "summary": "Remove unused vulnerable runtime dependencies, restore the ESM contract test, and repair pinned security automation.",
+          "inverse": {
+            "path": "forge candidate",
+            "parentBytes": "4b5e43618b8fd1b8f63bddd24ff524510d9514bc",
+            "hash": "90f0810994de093b99c75f76d4494fef739df95beb115ef94b4e989fca952878"
+          }
+        },
+        "primaryDelta": 1,
+        "anchorScore": 1,
+        "verdict": "PROMOTED",
+        "failureReasons": [],
+        "receipt": {
+          "payload": {
+            "kind": "candidate",
+            "id": "root__repo_gen1",
+            "target": "repo",
+            "verdict": "PROMOTED",
+            "primaryDelta": 1,
+            "baselineScore": {
+              "primary": 0,
+              "noopRate": 1,
+              "costPerWin": 6,
+              "regressed": false,
+              "itemWins": [
+                false,
+                false,
+                false,
+                false,
+                false
+              ]
+            },
+            "candidateScore": {
+              "primary": 1,
+              "noopRate": 0,
+              "costPerWin": 1,
+              "regressed": false,
+              "itemWins": [
+                true,
+                true,
+                true,
+                true,
+                true
+              ]
+            },
+            "anchorScore": 1,
+            "failureReasons": [],
+            "parents": [
+              "root"
+            ],
+            "generation": 1
+          },
+          "signature": "ADzJ+Awh3WRbj3D8rNz9rQucpqw9k6Bo3BYpmJu2XtEw5ZqmN8XEQtIb8tbavmLqggSLjq/HIwM8EJCA+6I4AA==",
+          "publicKey": "MCowBQYDK2VwAyEA0HHXaE7pMuw+wWhG3IPzUY+UjuI1Rxodsl1ZfkfekTY=",
+          "alg": "ed25519"
+        },
+        "createdAt": "2026-10-14T00:24:00.000Z",
+        "baselineScore": {
+          "primary": 0,
+          "noopRate": 1,
+          "costPerWin": 6,
+          "regressed": false,
+          "itemWins": [
+            false,
+            false,
+            false,
+            false,
+            false
+          ]
+        },
+        "candidateScore": {
+          "primary": 1,
+          "noopRate": 0,
+          "costPerWin": 1,
+          "regressed": false,
+          "itemWins": [
+            true,
+            true,
+            true,
+            true,
+            true
+          ]
+        }
+      }
+    ],
+    "lift_curve": [
+      {
+        "generation": 0,
+        "primary": 0,
+        "delta": 0,
+        "anchor": 1
+      },
+      {
+        "generation": 1,
+        "primary": 1,
+        "delta": 1,
+        "anchor": 1
+      }
+    ],
+    "gate_fingerprint": "c5942e7c9bf8f28fe7af47a6ec3887d11eeb3f8c8e8601cc6a7a54969ea0b981",
+    "verified_improvements": 1,
+    "anchor_surviving_improvements": 1,
+    "milestone_reached": false,
+    "created_at": "2026-10-14T00:24:00.000Z"
+  }
+}

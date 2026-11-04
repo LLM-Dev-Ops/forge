@@ -15,6 +15,30 @@ import {
   type EdgeFunctionRequest,
 } from '../../../src/agents/cli-command-generator/index.js';
 
+describe('CLI untrusted JSON boundary', () => {
+  it.each([
+    null,
+    [],
+    'hello',
+    42,
+    {},
+    { framework: 'invalid' },
+    { contractId: { toString: 'not callable' } },
+  ])('classifies invalid JSON value %j as a client validation error', async (input) => {
+    const result = await handleGenerate(input);
+    expect(result.success).toBe(false);
+    expect(result.failureType).toBe('validation');
+    expect(result.errors?.length).toBeGreaterThan(0);
+    const response = await edgeFunctionHandler({
+      method: 'POST',
+      headers: {},
+      body: JSON.stringify(input),
+    });
+    expect(response.statusCode).toBe(400);
+    expect(JSON.parse(response.body).errors).toEqual(result.errors);
+  });
+});
+
 describe('CLI Command Generator Handler', () => {
   const validInput = {
     contractId: 'test-contract',
