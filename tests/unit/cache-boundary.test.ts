@@ -1,14 +1,15 @@
 import { afterEach, describe, expect, it } from 'vitest';
+
 import { CACHE_CONFIG, Phase2Cache } from '../../src/phase2/cache.js';
 
 describe('Phase2 cache capacity and category boundaries', () => {
   const caches: Phase2Cache[] = [];
-  const make = () => {
+  const make = (): Phase2Cache => {
     const cache = new Phase2Cache();
     caches.push(cache);
     return cache;
   };
-  const fill = (cache: Phase2Cache) => {
+  const fill = (cache: Phase2Cache): void => {
     for (let i = 0; i < CACHE_CONFIG.MAX_ENTRIES; i++) {
       cache.set(`key${i}`, i, 'historical_read');
     }
