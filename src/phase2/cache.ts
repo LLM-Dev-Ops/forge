@@ -84,10 +84,10 @@ export class Phase2Cache<T = unknown> {
   /**
    * Get a value from cache
    */
-  get(key: string): T | undefined {
+  get(key: string, category?: CacheCategory): T | undefined {
     const entry = this.cache.get(key);
 
-    if (!entry) {
+    if (!entry || (category !== undefined && entry.category !== category)) {
       this.stats.misses++;
       return undefined;
     }
@@ -130,7 +130,7 @@ export class Phase2Cache<T = unknown> {
     const now = Date.now();
 
     // Evict if at capacity
-    if (this.cache.size >= CACHE_CONFIG.MAX_ENTRIES) {
+    if (!this.cache.has(key) && this.cache.size >= CACHE_CONFIG.MAX_ENTRIES) {
       this.evictLRU();
     }
 
@@ -198,7 +198,7 @@ export class Phase2Cache<T = unknown> {
     fetcher: () => Promise<R>,
     ttlMs?: number
   ): Promise<R> {
-    const cached = this.get(key);
+    const cached = this.get(key, 'historical_read');
     if (cached !== undefined) {
       return cached as unknown as R;
     }
@@ -229,7 +229,7 @@ export class Phase2Cache<T = unknown> {
     fetcher: () => Promise<R>,
     ttlMs?: number
   ): Promise<R> {
-    const cached = this.get(key);
+    const cached = this.get(key, 'lineage_lookup');
     if (cached !== undefined) {
       return cached as unknown as R;
     }
@@ -269,7 +269,7 @@ export class Phase2Cache<T = unknown> {
       }
     });
 
-    if (lruKey) {
+    if (lruKey !== null) {
       this.cache.delete(lruKey);
       this.stats.evictions++;
     }

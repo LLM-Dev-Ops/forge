@@ -1,0 +1,9 @@
+{
+  "baseline": "a829cd744c1db002d78848bbd1067bb8e54ce258",
+  "objective": "Honor cache capacity for empty LRU keys and replacement writes; prevent historical/lineage helper category confusion",
+  "holdouts": 6,
+  "anchors": 8,
+  "acceptance": ["6/6 native holdouts", "8/8 anchors", "retain all original passing tests and skips", "no altered audit/coverage/lint gates", "full CI/approvals and Ruflo worker execution before merge"],
+  "bounds": {"generations":1,"children":1,"concurrency":1,"riskBudget":0},
+  "scope": "Actual in-process TypeScript cache; no timer mocks, remote services or persistence changes"
+}
