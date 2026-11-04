@@ -1,0 +1,466 @@
+{
+  "scope": "Actual in-process cache with real timers and isolated node processes. Full acceptance fail-closed. Neutral cost axes are unmeasured. No speedup claim.",
+  "old": "a829cd744c1db002d78848bbd1067bb8e54ce258",
+  "head": "7ce841da337db06bb59f3dcb78b997408baeca98",
+  "lockSha256": "ef53c518d517959552b5badab7e4188db562dab199c0639c82db78f0e6e66fc0",
+  "gates": {
+    "required": {
+      "wholeProjectTypes": false,
+      "lint": false,
+      "format": false,
+      "coverage": false,
+      "security": false,
+      "rustValidation": false,
+      "allCiApprovals": false,
+      "rufloWorkerExecution": false
+    },
+    "evidence": {
+      "wholeProjectTypes": "exit2",
+      "lint": "exit1",
+      "format": "exit1",
+      "coverage": "71.12% lines below unchanged90% gate",
+      "security": "18 full npm findings",
+      "rustValidation": "Missing declared benchmark target prevents Cargo execution",
+      "allCiApprovals": "Required checks not all green",
+      "rufloWorkerExecution": "Actual agent_execute returned No LLM provider configured"
+    }
+  },
+  "observations": [
+    {
+      "revision": "a829cd744c1db002d78848bbd1067bb8e54ce258",
+      "suite": "cache-boundary-holdout",
+      "holdout": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "anchor": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ms": 261.195103
+    },
+    {
+      "revision": "a829cd744c1db002d78848bbd1067bb8e54ce258",
+      "suite": "cache-boundary-anchor",
+      "holdout": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "anchor": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ms": 262.29176400000006
+    },
+    {
+      "revision": "7ce841da337db06bb59f3dcb78b997408baeca98",
+      "suite": "cache-boundary-holdout",
+      "holdout": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "anchor": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ms": 268.43021899999985
+    }
+  ],
+  "trials": [
+    {
+      "trial": 0,
+      "revision": "a829cd744c1db002d78848bbd1067bb8e54ce258",
+      "holdout": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "anchor": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ms": 226.66464399999998
+    },
+    {
+      "trial": 0,
+      "revision": "7ce841da337db06bb59f3dcb78b997408baeca98",
+      "holdout": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "anchor": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ms": 306.522696
+    },
+    {
+      "trial": 1,
+      "revision": "7ce841da337db06bb59f3dcb78b997408baeca98",
+      "holdout": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "anchor": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ms": 233.61954500000002
+    },
+    {
+      "trial": 1,
+      "revision": "a829cd744c1db002d78848bbd1067bb8e54ce258",
+      "holdout": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "anchor": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ms": 209.57280300000002
+    },
+    {
+      "trial": 2,
+      "revision": "a829cd744c1db002d78848bbd1067bb8e54ce258",
+      "holdout": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "anchor": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ms": 216.20876299999986
+    },
+    {
+      "trial": 2,
+      "revision": "7ce841da337db06bb59f3dcb78b997408baeca98",
+      "holdout": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "anchor": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ms": 225.21033699999998
+    },
+    {
+      "trial": 3,
+      "revision": "7ce841da337db06bb59f3dcb78b997408baeca98",
+      "holdout": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "anchor": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ms": 295.456451
+    },
+    {
+      "trial": 3,
+      "revision": "a829cd744c1db002d78848bbd1067bb8e54ce258",
+      "holdout": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "anchor": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ms": 280.37263599999983
+    },
+    {
+      "trial": 4,
+      "revision": "a829cd744c1db002d78848bbd1067bb8e54ce258",
+      "holdout": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "anchor": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ms": 269.570189
+    },
+    {
+      "trial": 4,
+      "revision": "7ce841da337db06bb59f3dcb78b997408baeca98",
+      "holdout": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "anchor": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "ms": 266.6851709999996
+    }
+  ],
+  "benchmark": {
+    "a829cd744c1db002d78848bbd1067bb8e54ce258": {
+      "medianMs": 226.66464399999998,
+      "holdouts": 0,
+      "anchors": 40
+    },
+    "7ce841da337db06bb59f3dcb78b997408baeca98": {
+      "medianMs": 266.6851709999996,
+      "holdouts": 30,
+      "anchors": 40
+    }
+  },
+  "replay": {
+    "pass": true,
+    "checks": {
+      "receipts": true,
+      "reachesRoot": true,
+      "contiguousParents": true,
+      "allPromoted": true,
+      "gateUnchanged": true,
+      "gateReExecutes": true,
+      "allCommitsReceipts": true,
+      "sealedFieldsAuthentic": true
+    },
+    "failures": [],
+    "chainSummary": "gen0(root)"
+  },
+  "bundle": {
+    "data_source": "LIVE",
+    "root_id": "root",
+    "chain": [
+      {
+        "id": "root",
+        "generation": 0,
+        "parents": [],
+        "mutation": null,
+        "primaryDelta": 0,
+        "anchorScore": 1,
+        "verdict": "ROOT",
+        "failureReasons": [],
+        "receipt": {
+          "payload": {
+            "kind": "root",
+            "root": "root"
+          },
+          "signature": "sOWzwz89n9+veJGDI8gsBramrdufV5iKACXomnUPQJYEThOpBq5a1PiprKdZyxRQZIzNGnnbVfPFKV4sEBBsAw==",
+          "publicKey": "MCowBQYDK2VwAyEAGfmVJE2tvTEB1OS2sB2QwIjJvGwJuTiZj4vqg8Qf8XY=",
+          "alg": "ed25519"
+        },
+        "createdAt": "2026-11-04-pm-generation-0"
+      }
+    ],
+    "all_commits": [
+      {
+        "id": "root__revision_gen1",
+        "generation": 1,
+        "parents": [
+          "root"
+        ],
+        "mutation": {
+          "target": "revision",
+          "summary": "Bound empty-key eviction and replacement writes; check helper categories",
+          "inverse": {
+            "path": "src/phase2/cache.ts",
+            "parentBytes": "/**\n * Phase 2 - Operational Intelligence: Caching Layer\n *\n * Allowed for:\n * - Historical reads\n * - Lineage lookups\n *\n * TTL: 60-120 seconds\n *\n * @module phase2/cache\n */\n\nimport type { SignalEmitter } from './signals.js';\n\n// =============================================================================\n// CONSTANTS\n// =============================================================================\n\nexport const CACHE_CONFIG = {\n  MIN_TTL_MS: 60_000, // 60 seconds\n  MAX_TTL_MS: 120_000, // 120 seconds\n  DEFAULT_TTL_MS: 90_000, // 90 seconds (middle ground)\n  MAX_ENTRIES: 1000,\n  CLEANUP_INTERVAL_MS: 30_000, // Run cleanup every 30s\n} as const;\n\nexport type CacheCategory = 'historical_read' | 'lineage_lookup';\n\n// =============================================================================\n// TYPES\n// =============================================================================\n\ninterface CacheEntry<T> {\n  key: string;\n  value: T;\n  category: CacheCategory;\n  createdAt: number;\n  expiresAt: number;\n  accessCount: number;\n  lastAccessedAt: number;\n}\n\ninterface CacheStats {\n  entries: number;\n  hits: number;\n  misses: number;\n  evictions: number;\n  hitRate: number;\n  byCategory: Record<CacheCategory, number>;\n}\n\n// =============================================================================\n// LRU CACHE\n// =============================================================================\n\n/**\n * Phase 2 compliant cache for historical reads and lineage lookups\n *\n * Features:\n * - TTL enforcement (60-120s)\n * - Category-based organization\n * - LRU eviction\n * - Signal emission for cache operations\n */\nexport class Phase2Cache<T = unknown> {\n  private cache: Map<string, CacheEntry<T>> = new Map();\n  private stats = {\n    hits: 0,\n    misses: 0,\n    evictions: 0,\n  };\n  private cleanupInterval: NodeJS.Timeout | null = null;\n  private signalEmitter: SignalEmitter | null;\n\n  constructor(signalEmitter?: SignalEmitter) {\n    this.signalEmitter = signalEmitter || null;\n    this.startCleanup();\n  }\n\n  // ---------------------------------------------------------------------------\n  // Core Operations\n  // ---------------------------------------------------------------------------\n\n  /**\n   * Get a value from cache\n   */\n  get(key: string): T | undefined {\n    const entry = this.cache.get(key);\n\n    if (!entry) {\n      this.stats.misses++;\n      return undefined;\n    }\n\n    // Check expiration\n    if (Date.now() > entry.expiresAt) {\n      this.cache.delete(key);\n      this.stats.misses++;\n      return undefined;\n    }\n\n    // Update access stats\n    entry.accessCount++;\n    entry.lastAccessedAt = Date.now();\n    this.stats.hits++;\n\n    return entry.value;\n  }\n\n  /**\n   * Set a value in cache with category and optional TTL\n   *\n   * @param key Cache key\n   * @param value Value to cache\n   * @param category Must be 'historical_read' or 'lineage_lookup'\n   * @param ttlMs TTL in milliseconds (clamped to 60-120s range)\n   */\n  set(\n    key: string,\n    value: T,\n    category: CacheCategory,\n    ttlMs: number = CACHE_CONFIG.DEFAULT_TTL_MS\n  ): void {\n    // Enforce TTL bounds (60-120s)\n    const clampedTtl = Math.max(\n      CACHE_CONFIG.MIN_TTL_MS,\n      Math.min(CACHE_CONFIG.MAX_TTL_MS, ttlMs)\n    );\n\n    const now = Date.now();\n\n    // Evict if at capacity\n    if (this.cache.size >= CACHE_CONFIG.MAX_ENTRIES) {\n      this.evictLRU();\n    }\n\n    const entry: CacheEntry<T> = {\n      key,\n      value,\n      category,\n      createdAt: now,\n      expiresAt: now + clampedTtl,\n      accessCount: 0,\n      lastAccessedAt: now,\n    };\n\n    this.cache.set(key, entry);\n\n    // Emit lineage signal for cache write\n    if (this.signalEmitter) {\n      this.signalEmitter.emitMemoryLineage({\n        lineageType: 'write',\n        sourceKeys: [],\n        targetKey: `cache:${category}:${key}`,\n        operation: 'cache_set',\n        confidence: 1.0,\n      });\n    }\n  }\n\n  /**\n   * Check if key exists and is not expired\n   */\n  has(key: string): boolean {\n    const entry = this.cache.get(key);\n    if (!entry) return false;\n    if (Date.now() > entry.expiresAt) {\n      this.cache.delete(key);\n      return false;\n    }\n    return true;\n  }\n\n  /**\n   * Delete a specific key\n   */\n  delete(key: string): boolean {\n    return this.cache.delete(key);\n  }\n\n  /**\n   * Clear all entries\n   */\n  clear(): void {\n    this.cache.clear();\n  }\n\n  // ---------------------------------------------------------------------------\n  // Historical Read Helpers\n  // ---------------------------------------------------------------------------\n\n  /**\n   * Get or fetch a historical read\n   * Convenience method for caching historical data\n   */\n  async getOrFetchHistorical<R>(\n    key: string,\n    fetcher: () => Promise<R>,\n    ttlMs?: number\n  ): Promise<R> {\n    const cached = this.get(key);\n    if (cached !== undefined) {\n      return cached as unknown as R;\n    }\n\n    const value = await fetcher();\n    this.set(key, value as unknown as T, 'historical_read', ttlMs);\n\n    // Emit lineage signal for read\n    if (this.signalEmitter) {\n      this.signalEmitter.emitMemoryLineage({\n        lineageType: 'read',\n        sourceKeys: [`external:${key}`],\n        targetKey: `cache:historical_read:${key}`,\n        operation: 'historical_fetch',\n        confidence: 1.0,\n      });\n    }\n\n    return value;\n  }\n\n  /**\n   * Get or fetch a lineage lookup\n   * Convenience method for caching lineage data\n   */\n  async getOrFetchLineage<R>(\n    key: string,\n    fetcher: () => Promise<R>,\n    ttlMs?: number\n  ): Promise<R> {\n    const cached = this.get(key);\n    if (cached !== undefined) {\n      return cached as unknown as R;\n    }\n\n    const value = await fetcher();\n    this.set(key, value as unknown as T, 'lineage_lookup', ttlMs);\n\n    // Emit lineage signal\n    if (this.signalEmitter) {\n      this.signalEmitter.emitMemoryLineage({\n        lineageType: 'read',\n        sourceKeys: [`ruvector:lineage:${key}`],\n        targetKey: `cache:lineage_lookup:${key}`,\n        operation: 'lineage_fetch',\n        confidence: 1.0,\n      });\n    }\n\n    return value;\n  }\n\n  // ---------------------------------------------------------------------------\n  // Eviction & Cleanup\n  // ---------------------------------------------------------------------------\n\n  /**\n   * Evict least recently used entry\n   */\n  private evictLRU(): void {\n    let lruKey: string | null = null;\n    let lruTime = Infinity;\n\n    this.cache.forEach((entry, key) => {\n      if (entry.lastAccessedAt < lruTime) {\n        lruTime = entry.lastAccessedAt;\n        lruKey = key;\n      }\n    });\n\n    if (lruKey) {\n      this.cache.delete(lruKey);\n      this.stats.evictions++;\n    }\n  }\n\n  /**\n   * Remove expired entries\n   */\n  private cleanup(): void {\n    const now = Date.now();\n    const toDelete: string[] = [];\n\n    this.cache.forEach((entry, key) => {\n      if (now > entry.expiresAt) {\n        toDelete.push(key);\n      }\n    });\n\n    for (const key of toDelete) {\n      this.cache.delete(key);\n    }\n  }\n\n  /**\n   * Start periodic cleanup\n   */\n  private startCleanup(): void {\n    if (this.cleanupInterval) return;\n\n    this.cleanupInterval = setInterval(() => {\n      this.cleanup();\n    }, CACHE_CONFIG.CLEANUP_INTERVAL_MS);\n\n    // Don't prevent process exit\n    this.cleanupInterval.unref();\n  }\n\n  /**\n   * Stop periodic cleanup (for shutdown)\n   */\n  stopCleanup(): void {\n    if (this.cleanupInterval) {\n      clearInterval(this.cleanupInterval);\n      this.cleanupInterval = null;\n    }\n  }\n\n  // ---------------------------------------------------------------------------\n  // Statistics\n  // ---------------------------------------------------------------------------\n\n  /**\n   * Get cache statistics\n   */\n  getStats(): CacheStats {\n    const byCategory: Record<CacheCategory, number> = {\n      historical_read: 0,\n      lineage_lookup: 0,\n    };\n\n    this.cache.forEach((entry) => {\n      byCategory[entry.category]++;\n    });\n\n    const total = this.stats.hits + this.stats.misses;\n    const hitRate = total > 0 ? this.stats.hits / total : 0;\n\n    return {\n      entries: this.cache.size,\n      hits: this.stats.hits,\n      misses: this.stats.misses,\n      evictions: this.stats.evictions,\n      hitRate: Math.round(hitRate * 10000) / 100, // percentage with 2 decimals\n      byCategory,\n    };\n  }\n\n  /**\n   * Get entries by category\n   */\n  getByCategory(category: CacheCategory): Array<{ key: string; value: T }> {\n    const results: Array<{ key: string; value: T }> = [];\n    const now = Date.now();\n\n    this.cache.forEach((entry) => {\n      if (entry.category === category && now <= entry.expiresAt) {\n        results.push({ key: entry.key, value: entry.value });\n      }\n    });\n\n    return results;\n  }\n}\n\n// =============================================================================\n// GLOBAL INSTANCE\n// =============================================================================\n\nlet globalCache: Phase2Cache | null = null;\n\n/**\n * Initialize global Phase 2 cache\n */\nexport function initCache(signalEmitter?: SignalEmitter): Phase2Cache {\n  globalCache = new Phase2Cache(signalEmitter);\n  return globalCache;\n}\n\n/**\n * Get global cache instance\n */\nexport function getCache(): Phase2Cache | null {\n  return globalCache;\n}\n",
+            "hash": "3f06a69ee0c7d1ed15773f74ad853edb483d6df465c61c34f5f7a0e05fd7266b"
+          }
+        },
+        "primaryDelta": 1,
+        "anchorScore": null,
+        "verdict": "REJECTED",
+        "failureReasons": [
+          "safety_regressed"
+        ],
+        "receipt": {
+          "payload": {
+            "kind": "candidate",
+            "id": "root__revision_gen1",
+            "target": "revision",
+            "verdict": "REJECTED",
+            "primaryDelta": 1,
+            "baselineScore": {
+              "primary": 0,
+              "noopRate": 0,
+              "costPerWin": 0,
+              "regressed": true
+            },
+            "candidateScore": {
+              "primary": 1,
+              "noopRate": 0,
+              "costPerWin": 0,
+              "regressed": true
+            },
+            "anchorScore": null,
+            "failureReasons": [
+              "safety_regressed"
+            ],
+            "parents": [
+              "root"
+            ],
+            "generation": 1
+          },
+          "signature": "D8JgTTqEWajdCO5Glp6gOGTgyoflsgwoMOzCUZWbp3O2dlJbpSsZOClGGsv6+N4Tly0UMUPMrALNik4nsqSgAw==",
+          "publicKey": "MCowBQYDK2VwAyEAGfmVJE2tvTEB1OS2sB2QwIjJvGwJuTiZj4vqg8Qf8XY=",
+          "alg": "ed25519"
+        },
+        "createdAt": "2026-11-04-pm-generation-1",
+        "baselineScore": {
+          "primary": 0,
+          "noopRate": 0,
+          "costPerWin": 0,
+          "regressed": true
+        },
+        "candidateScore": {
+          "primary": 1,
+          "noopRate": 0,
+          "costPerWin": 0,
+          "regressed": true
+        }
+      }
+    ],
+    "lift_curve": [
+      {
+        "generation": 0,
+        "primary": 0,
+        "delta": 0,
+        "anchor": 1
+      }
+    ],
+    "gate_fingerprint": "c5942e7c9bf8f28fe7af47a6ec3887d11eeb3f8c8e8601cc6a7a54969ea0b981",
+    "verified_improvements": 0,
+    "anchor_surviving_improvements": 0,
+    "milestone_reached": false,
+    "created_at": "2026-11-04-pm-generation-1"
+  }
+}

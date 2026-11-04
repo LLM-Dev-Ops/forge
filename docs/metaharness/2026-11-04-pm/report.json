@@ -1,0 +1,229 @@
+{
+  "date": "2026-11-04",
+  "repo": "LLM-Dev-Ops/forge",
+  "pr": 103,
+  "status": {
+    "implementation": "EXECUTED",
+    "component": "VALIDATED",
+    "darwin": "NO_IMPROVEMENT",
+    "fullAcceptance": "BLOCKED",
+    "merged": false
+  },
+  "baseline": "a829cd744c1db002d78848bbd1067bb8e54ce258",
+  "candidate": "34a8c8be4096b5ef79c16a2f7a814f7c7208da88",
+  "main": "4b5e43618b8fd1b8f63bddd24ff524510d9514bc",
+  "changes": [
+    "Empty-string LRU keys now evict correctly, preventing capacity overflow",
+    "Replacing an existing full-cache key no longer evicts unrelated entries",
+    "Historical/lineage helper hits are category checked; unqualified get(key) behavior retained",
+    "ESLint now includes the existing test project, whose inherited test exclusions were corrected; no lint rules or thresholds disabled",
+    "Six regression tests and pinned Linux native-contract workflow added"
+  ],
+  "limits": "Single shared raw-key slot remains; category checking prevents cross-category reuse but does not store both categories independently. Actual ephemeral in-process cache; no timer mocks, service database, model inference or production throughput claim.",
+  "frozen": "tests/service/cache-boundary-contract.json and native probe were written and executed before cache edits:0/6 holdouts,8/8 anchors. Baseline and candidate installed separate node_modules; identical package-lock bytes verified in evaluator.",
+  "measurements": {
+    "holdouts": {
+      "baseline": 0,
+      "candidate": 6,
+      "total": 6
+    },
+    "anchors": {
+      "baseline": 8,
+      "candidate": 8,
+      "total": 8
+    },
+    "tests": {
+      "baseline": 1087,
+      "candidate": 1093,
+      "lostPassingNames": [],
+      "skipSetsIdentical": true
+    },
+    "coverage": {
+      "baselineLines": 70.14,
+      "candidateLines": 71.12,
+      "requiredLinesAndStatements": 90,
+      "exit": 1
+    },
+    "types": {
+      "baselineDiagnostics": 96,
+      "candidateDiagnostics": 96,
+      "exit": 2
+    },
+    "focusedSourceAndNewTestLint": {
+      "errors": 0,
+      "warnings": 0,
+      "exit": 0
+    },
+    "newTestFormat": 0,
+    "wholeLint": {
+      "errors": 4127,
+      "warnings": 495,
+      "exit": 1,
+      "explanation": "Correctly including actual test files exposes legacy typed-lint findings previously masked by TSConfig parser errors. No suppression or exclusions were added."
+    },
+    "wholeFormat": 1,
+    "build": 0,
+    "priorNativeHttp": 0,
+    "audit": {
+      "full": 18,
+      "critical": 4,
+      "high": 9,
+      "moderate": 5,
+      "production": 2,
+      "prodHigh": 1,
+      "prodModerate": 1,
+      "dependencyGraphChanged": false
+    },
+    "benchmark": {
+      "a829cd744c1db002d78848bbd1067bb8e54ce258": {
+        "medianMs": 218.73748400000022,
+        "holdouts": 0,
+        "anchors": 40
+      },
+      "34a8c8be4096b5ef79c16a2f7a814f7c7208da88": {
+        "medianMs": 213.51617699999997,
+        "holdouts": 30,
+        "anchors": 40
+      }
+    }
+  },
+  "versions": {
+    "ruflo": "3.56.3",
+    "transformers": "4.3.1",
+    "metaharness": "0.4.2",
+    "darwin": "0.10.3",
+    "flywheel": "0.1.12",
+    "upstreamDocs": "2f415bf47a7beb36f6a43c24e85a509acedf9ebb",
+    "rust": "1.99.1",
+    "openssl": "3.0.13"
+  },
+  "commands": {
+    "native": "node --import tsx tests/service/probe-cache-boundary.mjs ROOT [--assert]",
+    "evaluation": "node tests/evaluate-cache-boundary.mjs /tmp/forge4-baseline /tmp/forge-nov04pm /tmp/forge4-tools /tmp/forge4-revalidated-flywheel.json",
+    "nativeSemantics": "Actual imports from each source tree; fresh subprocesses and five alternating trials; real timers; no cache mocks.",
+    "checks": [
+      "npm ci --ignore-scripts --no-audit --no-fund",
+      "npm test -- --reporter=json --outputFile=RESULT",
+      "npm run build",
+      "npm run type-check",
+      "npm run lint",
+      "npm run format:check",
+      "npm run test:coverage",
+      "npm audit --json",
+      "npm audit --omit=dev --json",
+      "node --import tsx tests/service/verify-cli-input.mjs .",
+      "node node_modules/eslint/bin/eslint.js src/phase2/cache.ts tests/unit/cache-boundary.test.ts",
+      "node node_modules/prettier/bin/prettier.cjs --check tests/unit/cache-boundary.test.ts"
+    ],
+    "meta": "/home/ruv/.local/share/llm-dev-ops-tools/node_modules/.bin/metaharness score . --json",
+    "darwin": "timeout --kill-after=3 40 /home/ruv/.local/share/llm-dev-ops-tools/node_modules/.bin/metaharness-darwin evolve . --generations 1 --children 1 --concurrency 1 --seed 2026110414 --risk-budget 0 --sandbox real --mutator deterministic",
+    "rust": [
+      "cargo test --manifest-path forge-benchmarks/Cargo.toml --locked",
+      "cargo build --manifest-path forge-benchmarks/Cargo.toml --locked",
+      "cargo clippy --manifest-path forge-benchmarks/Cargo.toml --locked --all-targets --all-features -- -D warnings",
+      "cargo fmt --manifest-path forge-benchmarks/Cargo.toml -- --check",
+      "cargo audit --file forge-benchmarks/Cargo.lock --no-fetch --json"
+    ]
+  },
+  "optimization": {
+    "meta": "exit0, static heuristics only, not compile proof or measured cost",
+    "darwin": "exit0, baseline and child0.985 tied, no winner. Real repository-test substrate cannot distinguish harness surfaces; warning retained. No model-driven or mock signal claimed.",
+    "flywheel": "exit0 records REJECTED full acceptance: safety_regressed; root retained; verified improvements0. The flag fails closed on broader types/lint/security/coverage/Rust/Ruflo gates, not native component deterioration.",
+    "replay": {
+      "pass": true,
+      "checks": {
+        "receipts": true,
+        "reachesRoot": true,
+        "contiguousParents": true,
+        "allPromoted": true,
+        "gateUnchanged": true,
+        "gateReExecutes": true,
+        "allCommitsReceipts": true,
+        "sealedFieldsAuthentic": true
+      },
+      "failures": [],
+      "chainSummary": "gen0(root)"
+    },
+    "cost": "Neutral zero axes are unmeasured, not savings claims",
+    "timing": "Native process wall time only; all five alternating samples retained. No speedup/throughput/SLA claim. Initial and intermediate exact-head runs retained rather than cherry-picked."
+  },
+  "orchestration": {
+    "swarm": "swarm-1793818843764-27pvkw",
+    "worker": "forge-nov04pm-verifier",
+    "actualAgentExecute": "No LLM provider configured",
+    "workerTerminated": true,
+    "sourceImplementation": "Direct Codex; no delegated execution claim. Claude Code Task tool requested by repository instructions is unavailable; no CLI registration counted as implementation.",
+    "learning": "Offline-exec launcher plus local-model preload, task forge-cache-boundary-20261104pm, successfalse. Real384-dimensional MiniLM, pinned751bff37182d3f1213fa05d7196b954e230abad9, remote loading disabled. All four learning/feedback/trajectory flags true on revalidated outcome. Separate IPv4/IPv6 and child tests returned EPERM. No hash fallback or task data sent to Hugging Face."
+  },
+  "recovery": {
+    "checkout": "6454d374a939f2b5f94709b6909f4251b7204252",
+    "upstream": "83c4850c04d6243c1f700ec4a6a0e406a7d7198a",
+    "helperGitBlobPins": [
+      {
+        "path": "scripts/bootstrap-ruos.sh",
+        "sha": "73d5506c70acd7459c4734680cf81a1437e3f72a"
+      },
+      {
+        "path": "scripts/offline-exec.py",
+        "sha": "287ee69d10d6e8607a39df5cb4833177e73756b9"
+      },
+      {
+        "path": "scripts/ruflo-local-model.mjs",
+        "sha": "ca6e349ae963cdbd56bde3d245d90517889ac753"
+      }
+    ],
+    "verification": "All three actual local helper blob hashes equal current upstream. First wake command timed out without execution proof. Idempotent bootstrap then exited0; pkg-config verified OpenSSL3.0.13 before real Cargo checks."
+  },
+  "rustResults": {
+    "test": 101,
+    "build": 101,
+    "clippy": 101,
+    "format": 1,
+    "audit": 2,
+    "reason": "Declared benchmark target benches/forge_benchmarks.rs is missing, so Rust manifest parsing prevents test/build/Clippy execution. Cargo.lock for benchmark crate is missing; audit unavailable, no vulnerability count claimed. No target removed or pass fabricated."
+  },
+  "ci": {
+    "finalNative": "https://github.com/LLM-Dev-Ops/forge/actions/runs/41894745733",
+    "nativeResult": "SUCCESS at final source head",
+    "preformatContract": "https://github.com/LLM-Dev-Ops/forge/actions/runs/41894176461",
+    "preformatResult": "1093 tests and namespace anchors pass, then2 production advisories fail. Formatting-only follow-up revalidated all1093 and focused lint/format natively. Final broader checks may still be pending/red; no blanket CI pass."
+  },
+  "rejectedAndCorrected": [
+    {
+      "candidate": "496456633fefda4c3ae5b06bf966de13ae2e9458",
+      "issue": "New fixture exposed inherited TSConfig test exclusion; not accepted as fully typed-lint validated"
+    },
+    {
+      "candidate": "7ce841da337db06bb59f3dcb78b997408baeca98",
+      "issue": "Enabled typed test lint caught two require-await fixture errors, corrected without rule suppression"
+    },
+    {
+      "candidate": "308b9ace3a48dbaffa6c3cdf1f29c38b29a631b2",
+      "issue": "Fixture formatting failed; formatted then rebuilt/retested/replayed exact descendant"
+    }
+  ],
+  "coverage": {
+    "repositories": 58,
+    "openPRs": 157,
+    "pagination": "Installation168979216 offsets0=58,100=0; every repository open-PR page100 until short",
+    "gaps": 0,
+    "worked": [
+      "forge"
+    ],
+    "deferredImplementation": 57,
+    "scope": "All main SHAs/latestCI/root instruction-manifest inventories/open PRs refreshed; only Forge deeply worked. Fair rotation after test-bench/shield.",
+    "ledger": "coverage.json"
+  },
+  "safeguards": {
+    "conflicts": false,
+    "mainUnchanged": true,
+    "merged": "NONE; full gates/required approvals not satisfied",
+    "git": "Connected API expected-SHA leases, forcefalse; exact shell fetch/fast-forward verified. Shell write credentials not inferred.",
+    "architecture": "Rust/TypeScript integration retained; ephemeral cache correction only; no service-owned database, RuVector/CloudSQL schema, IAM, GCP, environment-secret or deployment changes.",
+    "memory": "Core-memory guidance empty/unscreened; visible architecture constraints mapped to cache-only changes; final blocked outcome accepted through append-only API.",
+    "isolation": "One writer and atomic claim per isolated worktree; no active cycle overwritten."
+  },
+  "rollback": "On a new branch revert style34a8c8b, fixture308b9ac, lint wiring7ce841d and source4964566 in reverse order; rebuild/test/replay through normal protected PR flow. Signed inverse stores exact parent cache.ts and SHA256. No deployed data or schema rollback performed.",
+  "remaining": "Resolve broad typed lint/type/format/coverage/audits, repair real Rust benchmark target+lock, configure an authorized existing Ruflo provider, then revalidate latest main/required CI/approvals. Do not bypass or force push.",
+  "evidence": "This separate evidence commit is not the tested application head. No deployment, publication, new paid provisioning or schedule changes."
+}

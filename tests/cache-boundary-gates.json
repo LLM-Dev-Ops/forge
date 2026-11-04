@@ -1,0 +1,4 @@
+{
+  "required": {"wholeProjectTypes":false,"lint":false,"format":false,"coverage":false,"security":false,"rustValidation":false,"allCiApprovals":false,"rufloWorkerExecution":false},
+  "evidence": {"wholeProjectTypes":"exit2", "lint":"exit1", "format":"exit1", "coverage":"71.12% lines below unchanged90% gate", "security":"18 full npm findings", "rustValidation":"Missing declared benchmark target prevents Cargo execution", "allCiApprovals":"Required checks not all green", "rufloWorkerExecution":"Actual agent_execute returned No LLM provider configured"}
+}
